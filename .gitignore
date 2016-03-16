@@ -1,4 +1,8 @@
+## Project specific
 results/*
+*.backup
+*~
+*.pyc
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
@@ -9,8 +13,6 @@ results/*
 *.out
 *.toc
 *.fmt
-*.backup
-*~
 
 ## Intermediate documents:
 *.dvi

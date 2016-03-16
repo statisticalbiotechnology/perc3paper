@@ -138,6 +138,13 @@ protein sequences. Separate searches were done on the target and decoy
 protein database, resulting in a total of $73$ million target and
 decoy PSMs.
 
+For assessment of the accuracy of protein-level FDR estimates we also
+downloaded two sets of spectra from Human Du145 prostate cancer cells
+and Yeast, collected on an LTQ Orbitrap Velos (Thermo Scientific), as
+described in Moruz {\em et  al.}~\cite{moruz2013}.  We will refer to
+these sets as the {\em hm\_human} and {\em hm\_yeast} sets.
+%FIXME: this is copied ad verbatim from the MaRaCluster paper
+
 The normal Percolator's semi-supervised learning algorithm randomly
 splits the training set in $3$ folds and computes $3$ scoring vectors,
 each trained on $2$ of the $3$ folds and tested on the remaining
@@ -174,19 +181,21 @@ We compared several straightforward protein inference methods:
 Fisher’s method for p-value combination, the picked target-decoy
 strategy~\cite{savitski2015scalable}, and the product of peptide-level
 posterior error probabilities (PEPs). We assessed the performance of
-the methods on the draft human proteome data, as well as on a standard
-protein mix. Using the standard protein mix we could characterize the
-accuracy and stability of the false discovery rate estimates, and the
-draft human proteome data could give us an indication of the
-performance on real data. We calculated false discovery rate (FDR)
-estimates from p-values for Fisher’s method, and using target-decoy
-models for all other methods.
+the methods on the {\em pandey} set, as well as on the {\em hm_yeast}
+and {\em hm_human} sets. We assessed the accuracy and stability of FDR
+estimates on the {\em hm\_yeast} data set by using a {\em sample} and
+{\em entrapment} database~\cite{granholm2013determining}. The draft
+human proteome data could give us an indication of the performance on
+real data. We calculated false discovery rate (FDR) estimates from
+p-values for Fisher’s method, and using target-decoy models for all
+other methods.
 
 \section*{Results}
 
-Searching all $73$ million target+decoy PSMs resulted in $300\,000$
-unique target peptides. Using subsets of even just $100\,000$ PSMs
-($0.1\%$) for SVM training did not reduce the number of identified
+Searching all $73$ million target+decoy PSMs resulted in $7\,928\,551$
+significant PSMs and $298\,095$ unique target peptides at a $q$ value
+threshold of $0.01$. Using subsets of even just $100\,000$ PSMs
+($0.14\%$) for SVM training did not reduce the number of identified
 peptides and generally even slightly increased this number. The
 standard deviation of the randomized runs for a fixed subset size did
 increase when taking increasingly smaller subsets, but this effect was
@@ -194,18 +203,40 @@ limited. By using a subset of $500\,000$ PSMs to train the SVM,
 Percolator’s runtime was reduced from several hours to under $10$
 minutes.
 
-We assessed the accuracy and stability of FDR estimates using three
-standard protein mixes. While Fisher’s method gave the most robust FDR
-estimates, it identified $5-10\%$ fewer proteins than the picked
-target-decoy strategy and product of PEPs. These two strategies did
-give reasonably accurate FDR estimates but were more sensitive to
-errors in the peptide identification. 
+\begin{figure}[!htp]
+\begin{center}
+\includegraphics[width=0.6\linewidth]{./img/subset-performance}
+\caption{\label{fig:subset}\textbf{Using subsets of the $73$ million
+target+decoy PSMs for SVM training retains the number of significant
+PSMs and peptides as training using the full set.} We used
+$10$ random subsets each of $100\,000, 500\,000, 1\,000\,000$ and
+$5\,000\,000$ PSMs to train the SVMs and scored all $73$ million PSMs
+using the resulting support vectors. We plotted the ratio of
+significant PSMs and peptides at a $q$ value threshold of $0.01$ as
+the fraction compared to using the full training set of $73$ million
+PSMs. The number of significant PSMs and unique peptides does not drop
+significantly for even subsets of $100\,000$ PSMs.}
+\end{center}
+\end{figure}
+
+
+% FIXME: table with duplicate/fragment protein statistics
+
+While Fisher’s method gave the most robust FDR estimates, it
+identified $5-10\%$ fewer proteins than the picked target-decoy
+strategy and product of PEPs. These two strategies did give reasonably
+accurate FDR estimates but were more sensitive to errors in the
+peptide identification. 
+
+% FIXME: accuracy plot for protein inference methods
 
 For the draft human proteome set, at $1\%$ FDR, the picked
 target-decoy strategy identified $12\,300$ proteins, multiplication of
 PEPs $11\,600$ and Fisher’s method only $8\,800$. From these results
 we concluded that the picked target-decoy strategy was the superior
 alternative and implemented this in the newest Percolator package.
+
+% FIXME: table with Pandey number identified proteins
 
 \section*{Discussion}
 
