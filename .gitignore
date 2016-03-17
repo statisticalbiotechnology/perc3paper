@@ -3,6 +3,7 @@ results/*
 *.backup
 *~
 *.pyc
+*.pdf
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
