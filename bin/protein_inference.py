@@ -5,15 +5,33 @@ import numpy as np
 import os
 import scipy.stats as stats
 import fisher
+import copy
 
 def main():
-  dataSet = "mimic_yeast"
+  dataSet = "pandey"
+  
+  force = True
+  
+  optionsArray = []
   
   options = {}
-  options["method"] = "twopept" # fisher, twopept, bestpept
-  options["targetDecoyAnalysis"] == "picked" # picked, classic, pval
+  options["method"] = "fisher" # fisher, twopept, bestpept, multPEP
+  options["targetDecoyAnalysis"] = "classic" # picked, classic, pval
   options["removeSharedPeptides"] = True
   options["proteinGroupingThreshold"] = 1.0
+  optionsArray.append(options)
+  
+  options = copy.deepcopy(options)
+  options["method"] = "twopept" # fisher, twopept, bestpept, multPEP
+  optionsArray.append(options)
+  
+  options = copy.deepcopy(options)
+  options["method"] = "bestpept" # fisher, twopept, bestpept, multPEP
+  optionsArray.append(options)
+  
+  options = copy.deepcopy(options)
+  options["method"] = "multPEP" # fisher, twopept, bestpept, multPEP
+  optionsArray.append(options)
   
   percTabBases = list()
   if dataSet == "prest":
@@ -32,11 +50,17 @@ def main():
     for i in range(1,11):
       percTabBases.append(percTabBase % i)
   elif dataSet == "pandey":
-    percTabBases.append("/media/storage/mergespec/data/Pandey/percolator_tdc/tab_15M_pval_0.001/Pandey.percolator")
-    #percTabBases.append("/media/storage/mergespec/data/Pandey/percolator_tdc_uniprot/tab_uppmax/Pandey.percolator")
-      
-  for percTabBase in percTabBases:
-    writeProteinFdrs(percTabBase, options)
+    #percTabBases.append("/media/storage/mergespec/data/Pandey/percolator_tdc/tab_subset_500k/Pandey.percolator")
+    percTabBases.append("/media/storage/mergespec/data/Pandey/percolator_tdc_uniprot/tab_uppmax/Pandey.percolator")
+  
+  for options in optionsArray:
+    for percTabBase in percTabBases:
+      targetOutFN, decoyOutFN = getOutputFN(percTabBase, options)
+      print targetOutFN
+      if not os.path.isfile(targetOutFN) or force:
+        writeProteinFdrs(percTabBase, options)
+      else:
+        getSignificantProteins(targetOutFN)
 
 def getOutputFN(percTabBase, options):
   targetOutFN = percTabBase + ".tab.proteins"
@@ -313,6 +337,16 @@ def pickedProteinCompetitionFromProts(targetProteins, decoyProteins, picked):
     lastMin = proteinQvaluePair[2]
     
   return pickedProteins
+
+def getSignificantProteins(targetOutFN):
+  csv.field_size_limit(sys.maxsize)
+  reader = csv.reader(open(protFile, 'r'), delimiter = '\t')
+  reader.next()
+  numSignificant = 0
+  for row in reader:
+    if float(row[2]) < 0.01:
+      numSignificant += 1
+  print "Proteins with q < 0.01:", numSignificant
   
 if __name__ == "__main__":
   main()

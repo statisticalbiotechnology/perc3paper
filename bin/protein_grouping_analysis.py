@@ -188,10 +188,10 @@ def main(**kwargs):
   print "1b. #proteins:", len(allProteins)
   print "2. #connected components:", len(graphs)
   
-  plotHist(numProteinsDist, "3a. #proteins in connected component", 1, 50, 1)
-  plotHist(numPeptidesDist, "3b. #peptides in connected component", 5, 500, 2)
-  plotHist(numProtPeptDist, "3c. #peptides+proteins in connected component", 5, 500, 3)
-  plotHist(numEdgesDist, "3d. #edges in connected component", 5, 500, 4)
+  plotHist(numProteinsDist, "3a. \#proteins in connected component", 1, 50, 1)
+  plotHist(numPeptidesDist, "3b. \#peptides in connected component", 5, 500, 2)
+  plotHist(numProtPeptDist, "3c. \#peptides+proteins in connected component", 5, 500, 3)
+  plotHist(numEdgesDist, "3d. \#edges in connected component", 5, 500, 4)
   
   print "4. #proteins fully contained in another protein:", fragmentProteins
   print "5. #proteins with >= 1 other protein with same peptides:", duplicateProteins

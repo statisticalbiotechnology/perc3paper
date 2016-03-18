@@ -62,6 +62,10 @@ easy-to-understand protein inference methods and implemented the best
 method in the Percolator package. We used Percolator 3.0 to analyze
 the data from a recent study of the draft human proteome containing 20
 million spectra (PM:24870542).
+
+The source code and Ubuntu, Windows, MacOS and Fedora binary packages
+are available from \url{https://github.com/percolator/percolator},
+under Apache 2.0 license.
 \end{abstract}
 
 \newpage
@@ -151,15 +155,18 @@ scans with Hardkl\"{o}r \cite{hoopmann2007} followed by Bullseye
 interface~\cite{mcilwain2014}. 
 
 For the {\em pandey} set, this was followed by a database search
-against the human Swissprot and Swissprot+Ensembl databases (accessed:
-2015 Nov 12) using the Tide search engine, again through the Crux
-interface. We used semi-tryptic searches and Tide's default fragment
-tolerance. The other search parameters were kept the same as
-in~\cite{kim2014draft} were used, except for the cyclization of
-N-terminal glutamine as a variable modification, which we did not
-consider. For the decoy proteins, we reversed the target protein
-sequences and separate searches were done on the target and decoy
-protein database.
+against the human Swissprot and Swissprot+TrEMBL databases (accessed:
+2015 Nov 12) concatenated with a database of common contaminants
+(source: http://maxquant.org/contaminants.zip, accessed: 2015 Apr 17)
+using the Tide search engine, again through the Crux interface. We
+used semi-tryptic searches and Tide's default fragment tolerance. The
+other search parameters were kept the same as in~\cite{kim2014draft}
+were used, except for the cyclization of N-terminal glutamine as a
+variable modification, which we did not consider. For the decoy
+proteins, we reversed the target protein sequences and separate
+searches were done on the target and decoy protein database.
+
+\subsection*{Subset scoring}
 
 The normal Percolator's semi-supervised learning algorithm randomly
 splits the training set in $3$ folds and computes $3$ scoring vectors,
@@ -170,6 +177,8 @@ simply applied the normal training algorithm on a random subset of the
 PSMs, resulting in $3$ scoring vectors. However, instead
 of scoring using only a single scoring vector, we now calculate each
 PSM's score as the average of the scores from the $3$ scoring vectors.
+
+\subsection*{Protein inference method benchmark}
 
 We assessed the accuracy and stability of FDR estimates on the {\em
 hm\_yeast} data set by using a {\em sample} and {\em entrapment}
@@ -185,6 +194,14 @@ original sample database. The {\em pandey} set was used as an
 indication of the performance on large-scale data. We calculated false
 discovery rate (FDR) estimates using the picked target-decoy strategy
 for all methods~\cite{savitski2015scalable}.
+
+For the {\em hm\_yeast} set, the Tide search engine was also used to
+obtain PSMs, again through the Crux interface. We did a full-digestion
+search using Trypsin/P with no miscleavages and peptide lengths of
+$[7,50]$, specifically chosen to prevent unintended shared peptide
+between the sample and entrapment database. We reversed the target
+protein sequences to obtain the decoy proteins and did separate
+searches on the target and decoy protein database.
 
 \section*{Results}
 
@@ -206,14 +223,16 @@ size, we calculated the mean and standard deviation over $10$
 randomized runs of the number of PSMs and peptides with $q$ value
 below $0.001$.
 
-Using subsets of even just $100\,000$ PSMs ($0.14\%$) for SVM
-training did not significantly reduce the number of identified
-peptides and PSMs (Figure \ref{fig:subset}). The standard deviation of
-identified PSMs across the randomized runs for a fixed subset size did
-seem to increase slightly when taking increasingly smaller subsets,
-but this effect was limited. By using a subset of $500\,000$ PSMs to
-train the SVM, Percolator’s runtime was reduced from several hours to
-under $10$ minutes.
+Using subsets of even just $100\,000$ PSMs ($0.14\%$) for SVM training
+did not significantly reduce the number of identified peptides and
+PSMs (Figure \ref{fig:subset}). The standard deviation of identified
+PSMs across the randomized runs for a fixed subset size did seem to
+increase slightly when taking increasingly smaller subsets, but this
+effect was limited. By using a subset of $500\,000$ PSMs to train the
+SVM, Percolator’s runtime was reduced from almost a full day to less
+than $10$ minutes. Furthermore, the internal memory consumption
+dropped from almost $100$ GB to just $10$ GB, allowing analysis of
+this type of large-scale data to be done on commodity computers.
 
 \begin{figure}[!htp]
 \begin{center}
@@ -231,18 +250,43 @@ not drop significantly for even subsets of $100\,000$ PSMs.}
 \end{center}
 \end{figure}
 
-To assess the accuracy of protein inference methods, we compared the
-$q$ values reported based on the decoy model, $FDR_{REV}$, to the
-fraction of entrapment proteins in the set of identified target
-proteins, which we will call ``Observed $FDR_{TRAP}$''. Technically,
-there is a discrepancy in underlying null hypothesis of these two
-entities. The $FDR_{REV}$ has the null hypothesis that the
-protein's peptide identifications came from incorrect PSMs, while the
-Observed $FDR_{TRAP}$ employs the null hypothesis that the protein is
-absent from the sample. However, by ensuring that the entrapment
-database is very large compared to the sample database the problem of
-inadvertently identifying absent sample proteins is mitigated.
-%FIXME: cite our inferrensim paper?
+To assess the accuracy of protein inference methods, we analyzed the
+{\em hm\_yeast} set and compared the $q$ values reported based on the
+decoy model, $FDR_{REV}$, to the fraction of entrapment proteins in
+the set of identified target proteins, which we will call ``Observed
+$FDR_{TRAP}$''. Technically, there is a discrepancy in underlying null
+hypothesis of these two entities. The $FDR_{REV}$ has the null
+hypothesis that the protein's peptide identifications came from
+incorrect PSMs, while the Observed $FDR_{TRAP}$ employs the null
+hypothesis that the protein is absent from the sample. However, by
+ensuring that the entrapment database is very large compared to the
+sample database the problem of inadvertently identifying absent sample
+proteins is mitigated. 
+%FIXME: cite our null model paper?
+
+%FIXME: find a better reference for protein grouping approach?
+First, we compared the four protein inference methods while retaining
+the shared peptides. We grouped proteins that had the same set of
+identified peptides, and also added proteins whose identified peptides
+formed a strict subset of this set to such a
+group~\cite{serang2012review}. To mitigate the effect of proteins
+breaking away from the group due to low-scoring, incorrect peptide
+identifications that are unique to that protein, a peptide-level FDR
+threshold was set at $10\%$. The decoy models based on the reversed
+protein database systematically produced anti-conservative estimates
+(Figure \ref{fig:shared-accuracy}).
+
+Fisher's method and the product of peptide-level PEPs manage to
+provide reasonable estimates from about $5\%$ protein-level FDR. For
+the two-peptide rule, not enough decoy proteins remain to see if the
+FDR estimates will become more accurate at some point, whereas the
+best scoring peptide approach never manages to recover. Taking
+stricter peptide-level thresholds generally improved the accuracy at
+the cost of larger protein groups and, in the case of the two-peptide
+rule, reduced sensitivity. However, going down to $5\%$ or even $1\%$
+peptide-level FDR still produced anti-conservative protein-level FDR
+estimates in the region below $1\%$ protein-level FDR.
+%FIXME: add figure for this last claim?
 
 \begin{figure}[!htp]
 \begin{center}
@@ -253,27 +297,79 @@ inadvertently identifying absent sample proteins is mitigated.
 (A) & (B)
 \end{tabular}
 \caption{\label{fig:shared-accuracy}\textbf{Retaining shared peptides
-breaks the decoy model for all protein inference methods.}}
+breaks the decoy model for all protein inference methods.} (A) We
+plotted the reported $q$ values from the decoy model, $FDR_{REV}$,
+against the fraction of entrapment proteins in the set of identified
+target proteins, ``Observed $FDR_{TRAP}$''. All four methods produce
+anti-conservative FDR estimates. Fisher's method and the product of
+peptide-level PEPs recover from around $5\%$ protein-level FDR, but
+the two peptide rule and best scoring peptide approach do not seem to
+recover. (B) We plotted the number of sample proteins, which can be
+considered an estimate for the number of true identifications, against
+the ``Observed $FDR_{TRAP}$''. Whereas Fisher's method, the product of
+peptide-level PEPs and the two peptide rule initially pick up many
+sample proteins, the best scoring peptide approach immediately breaks
+down.}
 \end{center}
 \end{figure}
 
-Before applying the protein inference methods, we used the approach to
+Second, we considered an approach using only peptides that are unique
+to a single protein. However, this could cause some proteins to become
+unidentifiable if there set of peptides was equal to that of another
+protein or formed a subset of it. Therefore, we used the approach to
 handling shared peptides from Nesvizhskii {\em et
 al.}~\cite{nesvizhskii2003statistical}. Here, proteins are grouped
 that are indistinguishable based on their theoretical proteolytically
 digested peptides, rather than their experimentally discovered
 peptides. We retain the peptides that are unique to such a protein
 group, rather than to a single protein. Especially for databases
-containing many proteoforms for a gene, this can decrease the number
-of shared peptides considerably.
+containing many proteoforms for a gene, this can considerably increase
+the number of protein entities, {\em i.e.}, single proteins or protein
+groups, with a peptide uniquely identifying it (Table
+\ref{tab:duplicate-proteins}).
 
-% FIXME: table with duplicate/fragment protein statistics
+\begin{table}[!htp]
+  \begin{center}
+  
+\begin{tabular}{|l|r|r|r|}
+\hline
+Human protein DBs & Swissprot & Swissprot+TrEMBL & Ensembl\\
+\hline
+\#protein sequences & 20\,201 & 69\,714 & 101\,933\\
+\hline
+%\#unique peptide sequences & 586\,424 & 664\,801 & 672\,519\\
+%\hline
+\#proteins with protein specific peptide(s) & 19\,938 & 52\,834 &
+49\,871\\
+\hline
+\#protein groups & 20\,104 & 58\,605 & 68\,370\\
+\hline
+\#protein groups with protein group specific peptide(s) & 19\,978 &
+54\,292 & 58\,929\\
+\hline
+\end{tabular}
 
-While Fisher’s method gave the most robust FDR estimates, it
-identified $5-10\%$ fewer proteins than the picked target-decoy
-strategy and product of PEPs. These two strategies did give reasonably
-accurate FDR estimates but were more sensitive to errors in the
-peptide identification.
+  \end{center}
+  \caption{\label{tab:duplicate-proteins}\textbf{The protein grouping
+approach of Nesvizhskii {\em et al.} can increase the number of
+identifiable protein entities considerably.} We did a fully tryptic
+digestion with no miscleavages of three human protein databases:
+Swissprot, Swissprot together with TrEMBL and Ensembl. We considered
+peptides with lengths of $6$ to $50$ amino acids. TrEMBL and Ensembl
+contain many proteoforms and therefore benefit signficantly from this
+particular protein grouping approach in terms of number of
+identifiable protein entities, {\em i.e.}, single proteins or protein
+groups. Note that, unfortunately, some protein groups will remain
+unidentifiable, because all their peptides are shared with at least
+two different protein groups.}
+\end{table}
+
+Using this more conservative approach, all four methods now gave
+accurate protein-level FDR estimates and a comparable number of
+protein identifications as the approach with shared peptides retained
+(Figure \ref{fig:unique-accuracy}). The two peptide rule was the only
+method clearly performing worse than the others in terms of
+identified protein groups.
 
 \begin{figure}[!htp]
 \begin{center}
@@ -289,29 +385,121 @@ peptide identification.
 (C)
 \end{tabular}
 \caption{\label{fig:unique-accuracy}\textbf{Using only protein-unique
-peptides gives accurate estimates of the false discovery rate.}}
+peptides gives accurate estimates of the false discovery rate.} (A) We
+plotted $FDR_{REV}$ against ``Observed $FDR_{TRAP}$'' as in Figure
+\ref{fig:shared-accuracy}A. All four methods produce
+accurate FDR estimates. The multiplication of peptide-level PEPs and
+the best scoring peptide approach are slightly more conservative than
+the other two methods. (B) We made a logarithmic plot of the region
+$[0.001, 0.1]$ with the same axes as in (A). This showed that the
+protein-level FDR estimates work reasonably well in this low region,
+but break down somewhere in the $[0.001, 0.01]$ range, due to the low
+density of decoy proteins in that region. (C) We plotted the number of
+sample proteins against the ``Observed $FDR_{TRAP}$'' as in Figure
+\ref{fig:shared-accuracy}B. Fisher's method, the product of
+peptide-level PEPs and the best scoring peptide approach all perform
+about equally, while the two peptide rule is much less sensitive.}
 \end{center}
 \end{figure}
 
-For the draft human proteome set, at $1\%$ FDR, the picked
-target-decoy strategy identified $12\,300$ proteins, multiplication of
-PEPs $11\,600$ and Fisher’s method only $8\,800$. From these results
-we concluded that the picked target-decoy strategy was the superior
-alternative and implemented this in the newest Percolator package.
+From these results, it became clear that taking only unique peptides
+together with the protein grouping approach from Nesvizhskii {\em et
+al.} would be the most robust choice, regardless of the protein
+inference method. To assess the performance using this strategy on
+large-scale data, we applied the four methods on the {\em pandey} set.
+Even for such large-scale data, all four protein inference methods
+take less than a minute processing time due to their simplicity. We
+looked at the number of identified proteins at $1\%$ reported
+protein-level FDR (Table~\ref{tab:pandey-stats}). From these results
+we concluded, in agreement with Savitski {\em et al.}, that the best
+scoring peptide approach was indeed the superior alternative and
+implemented this protein inference method in the latest Percolator
+package. 
 
-% FIXME: table with Pandey number identified proteins
+\begin{table}[!htp]
+  \begin{center}
+    \begin{tabular}{|l|r|r|}
+    \hline
+    partial digestion & Swissprot & Swissprot+TrEMBL\\
+    \hline
+    Best scoring peptide & 12\,370 & 5\,909\\
+    \hline
+    Product peptide-level PEPs & 11\,968 & 5\,626\\
+    \hline
+    Two peptide rule & 11\,409 & 4\,231\\
+    \hline
+    Fisher's method & 8\,964 & 3\,717\\
+    \hline
+    \end{tabular}
+  \end{center}
+  \caption{\label{tab:pandey-stats}\textbf{Using the best scoring
+peptide as a protein's representantive identified the most protein
+groups.} We examined the number of protein identifications for the
+four protein inference method using only peptides unique to one of
+the protein groups formed by the approach from Nesvizhskii {\em et
+al.}. The best scoring peptide approach identified the most protein
+groups with a $3\%$ margin over the second best method. Fisher's
+method identified much fewer proteins than the other three methods,
+due to incorrect peptides dragging down the $p$ value of correct
+proteins. The many proteoforms in the TrEMBL database caused a large
+drop in the number of identifications for all methods.}
+\end{table}
 
 \section*{Discussion}
 
-On the other hand, large-scale studies have a deep coverage of the
-present peptides and therefore identify many peptides that uniquely
-identify a protein. This provides the option of ignoring shared
-peptides altogether and makes the task of protein inference much
-simpler and intuitive. Here, we compared several easy-to-understand
-protein inference strategies that only use these peptides that
-uniquely identify a protein and implemented the best candidate in the
-Percolator package.
+We demonstrated that Percolator 3.0 can calculate protein-level FDRs
+on a human proteome scale study, in this case $73$ million PSMs, in a
+matter of minutes on a commodity computer.
 
+The subset scoring shows great stability even when only sampling a
+tiny fraction, as small as $0.1\%$, of the original number of PSMs.
+The {\em pandey} set might not be as representative for other types of
+studies that have greater heterogeneity, but it seems likely that the
+idea will hold as long as the subsets are not chosen too small.
+
+The most succesful protein inference method turned out to be the one
+where proteins were grouped by their theoretical peptide sets and only
+the best scoring peptide was considered. This throws out a lot of data
+and feels quite unsatisfying. With regards to the discarded shared
+peptides, large-scale studies give us the luxury of a deep coverage of
+the present peptides and therefore identify many peptides that
+are unique to a protein. This mitigates the problem of ignoring shared
+peptides in terms of number of protein identifications and makes the
+task of protein inference much simpler and intuitive.
+
+The main problem in including the evidence of the other lower scoring
+peptide identifications is the difficulty in dealing with incorrect
+peptide identifications belonging to correct protein identifications.
+This can clearly be seen in the poor performance of Fisher's method
+for combining $p$ values on the {\em pandey} set. Setting
+peptide-level thresholds can actually bring Fisher's method up to par
+with the best scoring peptide approach (data not shown). However,
+it does not produce signficantly more protein identifications,
+while introducing an extra parameter that needs to be set correctly.
+
+The protein grouping of Nesvizhskii {\em et al.} employed here still
+suffers from the problem that an identification of a protein group
+leaves open the question which proteins in the group are actually
+correct. Here, we interpreted it using the null hypothesis that all
+proteins in the group are incorrect, {\em i.e.}, an identified protein
+group means that we expect at least one of the proteins to be correct,
+but we are agnostic about which one. Compared to the conventional
+protein grouping approach, however, the groups are much smaller and
+this unsatisfactory answer does not have to be given as often.
+Furthermore, if genes, rather than proteoforms are the entities of
+interest, using databases with few proteoforms such as Swissprot
+should do the job.
+
+We realize that other parts of the shotgun proteomics analysis
+pipeline might still have significantly higher computing requirements
+than Percolator, but fortunately these can often readily be
+parallelized as the runs can be analyzed independently. However,
+obtaining significance measures per run or data set and combining them
+afterwards is not at all straightforward and should be handled with
+the greatest caution~\cite{serang2015solution}. This new version of
+Percolator opens up the possibility of easily obtaining statistical
+signficance measures on aggregated data from a great number of runs
+without running this risk.
 
 \section*{Acknowledgements}
 
