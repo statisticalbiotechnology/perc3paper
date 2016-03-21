@@ -4,28 +4,31 @@
 \title{Fast and accurate protein false discovery rates on human
 proteome study scale with Percolator 3.0}
 
-\author{Matthew The,\\
-Science for Life Laboratory,\\
-School of Biotechnology,\\
-Royal Institute of Technology - KTH,\\
-Box 1031, 17121 Solna,\\ Sweden
+\author{Matthew The\\
+Science for Life Laboratory\\
+School of Biotechnology\\
+Royal Institute of Technology - KTH\\
+Box 1031, 17121 Solna\\ Sweden
 \and 
-Michael J. MacCoss,\\
-Department of Genome Sciences,\\
-School of Medicine,\\
-University of Washington,\\
-Seattle, Washington 98195,\\ United States of America
+Michael J. MacCoss\\
+Department of Genome Sciences\\
+School of Medicine\\
+University of Washington\\
+Seattle, Washington 98195\\
+United States of America
 \and 
-William S. Noble,\\
-Department of Genome Sciences,\\
-School of Medicine,\\
-University of Washington,\\
-Seattle, Washington 98195,\\ United States of America
+William S. Noble\\
+Department of Genome Sciences\\
+School of Medicine\\
+University of Washington\\
+Seattle, Washington 98195\\
+United States of America
 \and
 Lukas K\"{a}ll\\
-Science for Life Laboratory,\\ School of Biotechnology,\\
+Science for Life Laboratory\\
+School of Biotechnology\\
 Royal Institute of Technology - KTH\\ 
-Box 1031, 17121 Solna,\\ Sweden}
+Box 1031, 17121 Solna\\ Sweden}
 
 \usepackage{setspace}
 \usepackage{amsmath}
@@ -50,23 +53,26 @@ data processing and analysis, protein inference, simulation
 
 \begin{abstract} 
 
-Percolator is a popular tool to increase yield in shotgun proteomics
-experiments and to assign reliable statistics, such as $q$~values and
-posterior error probabilities, to peptides and peptide spectrum
-matches (PSMs) from such experiments. Percolator's processing speed
-has been sufficient for typical data sets with hundreds of thousands
-of PSMs. With our new scalable approach, we can now also analyze
-millions of PSMs in a matter of minutes on a commodity computer.
-Furthermore, with the increasing awareness for the need for reliable
-statistics on the protein level, we compared several
-easy-to-understand protein inference methods and implemented the best
-method in the Percolator package. We used Percolator 3.0 to analyze
+Percolator is a widely used software tool that increases yield in
+shotgun proteomics experiments and assigns reliable statistical
+confidence measures, such as $q$~values and posterior error
+probabilities, to peptides and peptide-spectrum matches (PSMs) from
+such experiments. Percolator's processing speed has been sufficient
+for typical data sets consisting of hundreds of thousands of
+PSMs. With our new scalable approach, we can now also analyze millions
+of PSMs in a matter of minutes on a commodity computer.  Furthermore,
+with the increasing awareness for the need for reliable statistics on
+the protein level, we compared several easy-to-understand protein
+inference methods and implemented the best-performing
+method---grouping proteins by their corresponding sets of theoretical
+peptides and then considering only the best scoring peptide for each
+protein---in the Percolator package. We used Percolator 3.0 to analyze
 the data from a recent study of the draft human proteome containing 20
 million spectra (PM:24870542).
 
 The source code and Ubuntu, Windows, MacOS and Fedora binary packages
-are available from \url{https://github.com/percolator/percolator},
-under Apache 2.0 license.
+are available from \url{https://github.com/percolator/percolator}
+under an Apache 2.0 license.
 \end{abstract}
 
 \newpage
@@ -78,68 +84,82 @@ pipelines of shotgun proteomics experiments for the last decade, as a
 post-processor of the results from database search engines such as
 SEQUEST~\cite{eng1994}, MASCOT~\cite{cottrell1999},
 X!Tandem~\cite{craig2004tandem} and MS-GF+~\cite{kim2008}. Not only
-does Percolator give a significant boost in the number of significant
-peptide spectrum matches (PSMs) or peptides, it also provides a
-consistent statistical framework in which to interpret the search
-results. As Percolator's running time is usually much lower than that
-of the search engine, applying it as a post-processing step should be
-the default choice when processing shotgun proteomics data. As part of
-the continuous development and support of the Percolator package, we
-present two major additions aimed at supporting analysis of studies on
-the large scale proteomics.
+does Percolator provide a significant boost in the number of
+statistically significant peptide-spectrum matches (PSMs) or peptides,
+it also provides a consistent statistical framework in which to
+interpret the search results. Because Percolator's running time is
+usually much lower than that of the search engine, applying it as a
+post-processing step should be the default choice when processing
+shotgun proteomics data. As part of the continuous development and
+support of the Percolator package, we present two major additions
+aimed at supporting analysis of large scale proteomics studies.
 
-First, as advances in technology progressively reduce the cost and
+First, as advances in technology continue to reduce the cost and
 effort needed to carry out shotgun proteomic experiments, the amount
 of data per study will keep rising steadily. While previous versions
 of Percolator are able to process the data from the vast majority of
-current studies in a decent time frame, certain limitations have come
-into sight for laboratories without access to an above average
-commodity computer. When processing millions of PSMs, the majority of
-Percolator’s processing time is spent on training support vector
-machines (SVMs). One could, however, surmise that the performance of
-the SVM as a function of the size of its training set will plateau at
+current studies in a reasonable time frame, the algorithm has some
+limitations for laboratories without access to a high-performance
+computing facility. When processing millions of PSMs, the majority of
+Percolator's processing time is spent on training support vector
+machine (SVM) classifiers.  In some settings, however, the performance
+of the SVM as a function of the size of its training set plateaus at
 an relatively low number of input PSMs~\cite{gonnelli2015decoy}. Here,
-we propose to use Percolator’s semi-supervised learning algorithm to
-train SVMs on only a random subset of the PSMs and used the resulting
-score vectors to evaluate the rest of the PSMs.
+we use Percolator's semi-supervised learning algorithm to train SVMs
+on a randomly selected subset of the PSMs and used the resulting score
+vectors to evaluate the rest of the PSMs.  This random downsampling
+approach yields much faster analysis times without any loss in
+statistical power.
 
-%FIXME: add citation for two peptide rule
 Second, we have investigated efficent ways to obtain protein-level
 accuracy estimates. One of the major obstacles was the question of how
 to deal with shared peptides and protein grouping. An implementation
-of Fido~\cite{serang2010efficient} has been part of the Percolator
-package for quite some time now and addressed these two issues, but is
-too computationally intensive on large-scale datasets with many shared
-peptides. We compared several straightforward and scalable protein
-inference methods: using the best scoring peptide, the two peptide
-rule, the product of peptide-level posterior error probabilities
-(PEPs) and Fisher’s method for combining independent $p$~values. We
-list a couple of pros and cons for the alternatives in the paragraph
-below.
+of Fido~\cite{serang2010efficient}, which has been part of the
+Percolator package since {\em FIXME: state year}, addresses these two
+issues but is too computationally expensive to apply to large-scale
+datasets. We therefore compared four straightforward and scalable
+protein inference methods: using the best scoring peptide, the two
+peptide rule \cite{FIXME}, the product of peptide-level posterior
+error probabilities (PEPs), and Fisher's method for combining
+independent $p$~values.
 
-Savitski {\em et al.}~\cite{savitski2015scalable} showed that, on
-large-scale datasets, taking the best scoring peptide as the
-representantive of a protein was superior to incorporating information
-from lower scoring peptides. For many, however, this feels rather
-unsatisfying as the method discards all information but the best
-scoring PSMs for each protein.  In contrast, there are several ways to
-combine evidence on peptide level that can be considered. The
-two-peptide-rule goes a small step further by demanding evidence for a
-second peptide to that support a protein inference, to prevent for so
-called one-hit wonders, {\em i.e.} cases where a single, potentially
-spurios peptide above treshold, infers a protein. An other alternativs
-is to consider the product of peptide-level PEPs. This procedure can
-take into account all peptides of a protein and provides some
-protection against one-hit wonders~\cite{cox2008maxquant}. It also has
-the benefit of being impervious to incorrect peptide identifications
-as it just gives a multiplication by $1.0$. Yet another method is to
-use Fischer's method for combining independent $p$~values can take
-into account all peptides of a protein and can penalize one-hit
-wonders in the presence of many incorrect peptide
-identifications~\cite{spirin2011assigning,alves2015mass,
-  granholm2013determining}. This last characteristic can however also
-be a disadvantage, as many incorrect peptide identifications can
-overrule a minority of correct peptide identifications.
+Although each of these methods is efficient to compute, they each
+offer specific pros and cons.  Savitski {\em et
+  al.}~\cite{savitski2015scalable} showed that, on large-scale
+datasets, taking the best scoring peptide as the representantive of a
+protein was superior to incorporating information from lower scoring
+peptides. However, this approach is unsatisfying because the method
+discards all information but the best scoring PSMs for each protein.
+Perhaps the simplest way to combine evidence at the peptide level is
+widely used the two-peptide rule.  This approach requires evidence for
+a second peptide to support a protein inference, thereby preventing
+so-called ``one-hit wonders'', {\em i.e.}, cases where a single,
+potentially spurious PSMs yields a spurious protein detection.  An
+alternative that takes into account even more evidence is to compute
+the product of peptide-level PEPs. This procedure takes into account
+all peptides within a protein and provides some protection against
+one-hit wonders~\cite{cox2008maxquant}. The method also has the
+benefit of being robust to incorrect peptide identifications as it
+just gives a multiplication by $1.0$. {\em FIXME: The previous
+  sentence doesn't make sense to me.  I think you mean that it is
+  robust to missing peptides.  Can you clarify? --Bill} A drawback to
+using the product of PEPs is that it is not obvious how to scale the
+resulting product to take into account protein length.  Also, it is
+not obvious {\em a priori} that the independence assumption implicit
+in taking the product applies in this case.  The latter concern also
+applies to Fisher's method, which is a classical technique for
+combining independent $p$~values \cite{FIXME}.  Like the product of
+PEPs, Fisher's method takes into account all peptides of a protein and
+penalizes one-hit wonders in the presence of many incorrect peptide
+identifications~\cite{spirin2011assigning, alves2015mass,
+  granholm2013determining}. {\em FIXME: I'm still confused by ``in the
+  presence of many incorrect peptide identifications.''  Also, I think
+  you should avoid saying ``peptide identification'' and use the term
+  ``detection'' instead. --Bill} This last characteristic can however
+also be a disadvantage, as many incorrect peptide identifications can
+overrule a minority of correct peptide identifications.  Unlike the
+product of PEPs, Fisher's method explicitly accounts for the number of
+$p$~values being combined and hence normalizes for protein length.
 
 \section*{Methods}
 
@@ -237,7 +257,7 @@ PSMs (Figure \ref{fig:subset}). The standard deviation of identified
 PSMs across the randomized runs for a fixed subset size did seem to
 increase slightly when taking increasingly smaller subsets, but this
 effect was limited. By using a subset of $500\,000$ PSMs to train the
-SVM, Percolator’s runtime was reduced from almost a full day to less
+SVM, Percolator's runtime was reduced from almost a full day to less
 than $10$ minutes. Furthermore, the internal memory consumption
 dropped from almost $100$ GB to just $10$ GB, allowing analysis of
 this type of large-scale data to be done on commodity computers.
