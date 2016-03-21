@@ -51,7 +51,7 @@ data processing and analysis, protein inference, simulation
 \begin{abstract} 
 
 Percolator is a popular tool to increase yield in shotgun proteomics
-experiments and to assign reliable statistics, such as q-values and
+experiments and to assign reliable statistics, such as $q$~values and
 posterior error probabilities, to peptides and peptide spectrum
 matches (PSMs) from such experiments. Percolator's processing speed
 has been sufficient for typical data sets with hundreds of thousands
@@ -88,10 +88,10 @@ the continuous development and support of the Percolator package, we
 present two major additions aimed at supporting analysis of studies on
 the large scale proteomics.
 
-As advances in technology progressively reduce the cost and effort
-needed to carry out shotgun proteomic experiments, the amount of data
-per study will keep rising steadily. While previous versions of
-Percolator are able to process the data from the vast majority of
+First, as advances in technology progressively reduce the cost and
+effort needed to carry out shotgun proteomic experiments, the amount
+of data per study will keep rising steadily. While previous versions
+of Percolator are able to process the data from the vast majority of
 current studies in a decent time frame, certain limitations have come
 into sight for laboratories without access to an above average
 commodity computer. When processing millions of PSMs, the majority of
@@ -103,18 +103,19 @@ we propose to use Percolator’s semi-supervised learning algorithm to
 train SVMs on only a random subset of the PSMs and used the resulting
 score vectors to evaluate the rest of the PSMs.
 
-%FIXME: add citation for multiplication of PEPs and two peptide rule
-Second, protein-level accuracy estimates have been on our feature wish
-list for quite some time now. One of the major obstacles was the
-question of how to deal with shared peptides and protein grouping. An
-implementation of Fido~\cite{serang2010efficient} has been part of the
-Percolator package for quite some time now and addressed these two
-issues, but is too computationally intensive on large-scale
-datasets with many shared peptides. We compared several
-straightforward and scalable protein inference methods: using the
-best scoring peptide, the two peptide rule, the product of
-peptide-level posterior error probabilities (PEPs) and Fisher’s method
-for p-value combination.
+%FIXME: add citation for two peptide rule
+Second, we have investigated efficent ways to obtain protein-level
+accuracy estimates. One of the major obstacles was the question of how
+to deal with shared peptides and protein grouping. An implementation
+of Fido~\cite{serang2010efficient} has been part of the Percolator
+package for quite some time now and addressed these two issues, but is
+too computationally intensive on large-scale datasets with many shared
+peptides. We compared several straightforward and scalable protein
+inference methods: using the best scoring peptide, the two peptide
+rule, the product of peptide-level posterior error probabilities
+(PEPs) and Fisher’s method for combining independent $p$~values. We
+list a couple of pros and cons for the alternatives in the paragraph
+below.
 
 Savitski {\em et al.}~\cite{savitski2015scalable} showed that, on
 large-scale datasets, taking the best scoring peptide as the
@@ -123,20 +124,22 @@ from lower scoring peptides. For many, however, this feels rather
 unsatisfying as the method discards all information but the best
 scoring PSMs for each protein.  In contrast, there are several ways to
 combine evidence on peptide level that can be considered. The
-two-peptide-rule goes a small step further by demanding a second
-peptide to be found as well to prevent one-hit wonders, but at the
-same time seems a bit arbitrary. The product of peptide-level PEPs can
+two-peptide-rule goes a small step further by demanding evidence for a
+second peptide to that support a protein inference, to prevent for so
+called one-hit wonders, {\em i.e.} cases where a single, potentially
+spurios peptide above treshold, infers a protein. An other alternativs
+is to consider the product of peptide-level PEPs. This procedure can
 take into account all peptides of a protein and provides some
 protection against one-hit wonders~\cite{cox2008maxquant}. It also has
 the benefit of being impervious to incorrect peptide identifications
-as it just gives a multiplication by $1.0$. Fisher's method for
-combining independent p-values can take into account all peptides of a
-protein and can penalize one-hit wonders in the presence of many
-incorrect peptide
+as it just gives a multiplication by $1.0$. Yet another method is to
+use Fischer's method for combining independent $p$~values can take
+into account all peptides of a protein and can penalize one-hit
+wonders in the presence of many incorrect peptide
 identifications~\cite{spirin2011assigning,alves2015mass,
-granholm2013determining}. This last characteristic can however also be
-a disadvantage, as many incorrect peptide identifications can overrule
-a minority of correct peptide identifications.
+  granholm2013determining}. This last characteristic can however also
+be a disadvantage, as many incorrect peptide identifications can
+overrule a minority of correct peptide identifications.
 
 \section*{Methods}
 
@@ -211,7 +214,7 @@ searches on the target and decoy protein database.
 \section*{Results}
 
 For the {\em Kim set}, the Tide searches on the human Swissprot
-database resulted in $73$ million target+decoy PSMs and
+database resulted in $73$ million target and decoy PSMs and
 post-processing with Percolator resulted in $7\,928\,551$ significant
 PSMs and $298\,095$ unique target peptides at a $q$ value threshold of
 $0.01$.
@@ -219,13 +222,14 @@ $0.01$.
 To characterize the performance of the scoring vectors resulting from
 training on subsets of the PSMs, we randomly selected subsets of
 $100\,000, 500\,000, 1\,000\,000$ and $5\,000\,000$ PSMs from the {\em
-Kim} set as training sets. Preliminary results showed that including
-target and decoy PSMs belonging to the same spectrum together during
-the selection of random subsets gave a more stable performance than
-sampling without taking this into account. Therefore this strategy was
-applied in the random sampling process. For each random subset size,
-we calculated the mean and standard deviation over $10$ randomized
-runs of the number of PSMs and peptides with $q$ value below $0.001$.
+  Kim} set as training sets, still evaluating on the full
+dataset. Preliminary results showed that including target and decoy
+PSMs belonging to the same spectrum together during the selection of
+random subsets gave a more stable performance than sampling without
+taking this into account. Therefore this strategy was applied in the
+random sampling process. For each random subset size, we calculated
+the mean and standard deviation over $10$ randomized runs of the
+number of PSMs and peptides with $q$ value below $0.001$.
 
 Using subsets of even just $100\,000$ PSMs ($0.14\%$) for SVM training
 did not significantly reduce the number of identified peptides and
@@ -344,12 +348,12 @@ Number of protein sequences & 20\,201 & 69\,714 & 101\,933\\
 \hline
 %\#unique peptide sequences & 586\,424 & 664\,801 & 672\,519\\
 %\hline
-Number of proteins with protein specific peptide(s) & 19\,938 & 52\,834 &
+Number of proteins with protein-specific peptide(s) & 19\,938 & 52\,834 &
 49\,871\\
 \hline
 Number of protein groups & 20\,104 & 58\,605 & 68\,370\\
 \hline
-Number of protein groups with protein group specific peptide(s) & 19\,978 &
+Number of protein groups with protein group-specific peptide(s) & 19\,978 &
 54\,292 & 58\,929\\
 \hline
 \end{tabular}
@@ -467,13 +471,14 @@ strategy is carried out on large datasets.
 
 The most succesful protein inference method turned out to be the one
 where proteins were grouped by their theoretical peptide sets and only
-the best scoring peptide was considered. This throws out a lot of data
-and feels quite unsatisfying. With regards to the discarded shared
-peptides, large-scale studies give us the luxury of a deep coverage of
-the present peptides and therefore identify many peptides that
-are unique to a protein. This mitigates the problem of ignoring shared
-peptides in terms of number of protein identifications and makes the
-task of protein inference much simpler and intuitive.
+the best scoring peptide was considered. This implies that the
+algorithm excludes the majority of the PSMs in its final protein list,
+something that may feel quite unsatisfying. With regards to the
+discarded shared peptides, large-scale studies give us the luxury of a
+deep coverage of the present peptides and therefore identify many
+peptides that are unique to a protein. This mitigates the problem of
+ignoring shared peptides in terms of number of protein identifications
+and makes the task of protein inference much simpler and intuitive.
 
 The main problem in including the evidence of the other lower scoring
 peptide identifications is the difficulty in dealing with incorrect
