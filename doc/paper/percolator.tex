@@ -165,71 +165,87 @@ $p$~values being combined and hence normalizes for protein length.
 
 We downloaded a set of spectra, comprising $2212$ runs on $17$ adult
 tissues, $7$ fetal tissues, and $6$ hematopoietic cell types with a
-total of $21$ million spectra from~\cite{kim2014draft}. The
-investigated peptides were analyzed on an LTQ Orbitrap Velos and Elite
+total of $21$ million spectra from~\cite{kim2014draft}. {\em FIXME: I
+  got 24,931,642 spectra. --Bill} The
+samples were analyzed on an LTQ Orbitrap Velos and Elite
 (Thermo Scientific) equipped with an Easy-nLC II nanoflow LC System
 (Waters). We will refer to this set as the {\em Kim} set.
 
 For verification of the accuracy of protein-level FDR estimates we
 additionally downloaded spectra from yeast cells, collected on an LTQ
-Orbitrap Velos (Thermo Scientific), as described in Moruz {\em et 
-al.}~\cite{moruz2013}. We will refer to this set as the {\em
-hm\_yeast} set.
+Orbitrap Velos (Thermo Scientific), as described in Moruz {\em et
+  al.}~\cite{moruz2013}. {\em FIXME: State how many spectra, how many
+  injections, and what state the cells were in (log phase
+  growth?). --Bill} We will refer to this set as the {\em hm\_yeast}
+set.
 
 Converting the RAW files to MS1 and MS2 files was done with
-Proteowizard~\cite{kessner2008}. Next, we assigned high-resolution
+Proteowizard~\cite{kessner2008}. {\em FIXME: State any options that
+  were used.  I used {\bf msconvert --ms2 --gzip --filter "peakPicking
+    vendor msLevel=2" --filter ``MS2Deisotope Poisson'' *.raw} --Bill} Next, we assigned high-resolution
 precursor masses and charges using information from the precursor
 scans with Hardkl\"{o}r \cite{hoopmann2007} followed by Bullseye
 \cite{hsieh2009}, through the Crux 2.0 package
-interface~\cite{mcilwain2014}. 
+interface~\cite{mcilwain2014}.  {\em FIXME: Default parameters?  If
+  so, say so.  Also, it would be good to state the full version
+  number. --Bill}
 
-For the {\em Kim} set, this was followed by a database search against
-the human Swissprot and Swissprot+TrEMBL databases (accessed: 2015 Nov
-12) concatenated with a database of common contaminants (source:
-http://maxquant.org/contaminants.zip, accessed: 2015 Apr 17) using the
-Tide search engine, again through the Crux interface. We used
-semi-tryptic searches and Tide's default fragment tolerance. The other
-search parameters were kept the same as in~\cite{kim2014draft}, except
-that we did not include variable modifications for the cyclization of
-N-terminal glutamine. For the decoy proteins, we reversed the target
-protein sequences and separate searches were done on the target and
-decoy protein database.
+For the {\em Kim} set, the data was searched against the human
+Swissprot and Swissprot+TrEMBL databases (accessed: 2015 Nov 12)
+concatenated with a database of common contaminants (source:
+\url{http://maxquant.org/contaminants.zip}, accessed: 2015 Apr 17)
+using the Tide search engine, again through the Crux interface. We
+used semi-tryptic searches and Tide's default fragment tolerance. The
+other search parameters were kept the same as in~\cite{kim2014draft}
+(10 ppm precursor window, fully tryptic digestion, up to 2 missed
+cleavages, up to 2 oxidations of methionine per peptide, variable
+acetylation of N-termini {\em FIXME: Please check that these
+  parameters are correct. --Bill}) , except that we did not include
+variable modifications for the cyclization of N-terminal glutamine.
+For the decoy proteins, we reversed the target protein sequences, and
+separate searches were done on the target and decoy protein database
+for input to Percolator. {\em FIXME: Oh no!  Isn't this a huge
+  problem?  Why did you do separate searches? --Bill}
 
 \subsection*{Subset scoring}
 
 By default, Percolator's semi-supervised learning algorithm randomly
-splits the training set in $3$ folds and computes $3$ scoring vectors,
-each trained on $2$ of the $3$ folds and tested on the remaining fold.
-The final scores are then calculated using the scoring vector where
-the PSM was in the test set. However, to implement subset scoring, we
-applied the normal training algorithm on a random subset of the PSMs,
-resulting in $3$ scoring vectors and calculated each PSM's score as
-the average of the scores from the $3$ scoring vectors.
+splits the training set into three subsets and computes trains three
+separate SVN classifiers, each trained on two of the three subsets and
+tested on the remaining subset.  The final scores are thus calculated
+using the classifier for which the PSM was in the test set. However,
+to implement subset scoring, we applied the normal training algorithm
+on a random subset of the PSMs, resulting in three SVMs.  Each PSM's
+score was computed as the average of the scores from these three SVMs.
 
 \subsection*{Protein inference method benchmark}
 
 We assessed the accuracy and stability of FDR estimates on the {\em
-hm\_yeast} data set by using a {\em sample} and {\em entrapment}
-database~\cite{granholm2013determining}. The yeast Swissprot database
-(accessed: 2016 Mar 15) was taken as the sample database and the
-entrapment database was created by shuffling the peptide sequences of
-the sample database. This process was repeated $9$ times, making the
-target database $10$ times the size of the original sample database.
-Furthermore, we artificially added shared peptides between the sample
-and entrapment database by keeping $4\%$ of the sample peptides
-unshuffled, which corresponded to the shared peptide rate in the
-original sample database. The {\em Kim} set was used as an
-indication of the performance on large-scale data. We calculated false
-discovery rate (FDR) estimates using the picked target-decoy strategy
-for all methods~\cite{savitski2015scalable}.
+  hm\_yeast} data set by using a {\em sample} and {\em entrapment}
+database, as previously described~\cite{granholm2013determining}. The
+yeast Swissprot database (\url{FIXME}, accessed: 2016 Mar 15) was
+taken as the sample database, and the entrapment database was created
+by shuffling the peptide sequences of the sample database. This
+process was repeated nine times, making the target database $10$ times
+the size of the original sample database.  Furthermore, we
+artificially added shared peptides between the sample and entrapment
+database by keeping $4\%$ of the sample peptides unshuffled.  This 
+corresponded to the shared peptide rate in the original sample
+database.
+
+The {\em Kim} set was used as an indication of the performance on
+large-scale data. We calculated false discovery rate (FDR) estimates
+using the picked target-decoy strategy for all
+methods~\cite{savitski2015scalable}.
 
 For the {\em hm\_yeast} set, the Tide search engine was also used to
 obtain PSMs, again through the Crux interface. We did a full-digestion
-search using Trypsin/P with no miscleavages and peptide lengths of
-$[7,50]$, specifically chosen to prevent unintended shared peptide
-between the sample and entrapment database. We reversed the target
-protein sequences to obtain the decoy proteins and did separate
-searches on the target and decoy protein database.
+search using trypsin (including cleavage suppression by proline) with
+no miscleavages and peptide lengths of $[7,50]$, specifically chosen
+to prevent unintended shared peptides between the sample and
+entrapment databases. We reversed the target protein sequences to
+obtain the decoy proteins and did separate searches on the target and
+decoy protein database.
 
 \section*{Results}
 
