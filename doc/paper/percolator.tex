@@ -111,22 +111,23 @@ vectors to evaluate the rest of the PSMs.  This random downsampling
 approach yields much faster analysis times without any loss in
 statistical power.
 
-Second, we have investigated efficent ways to obtain protein-level
+Second, we have investigated efficient ways to obtain protein-level
 accuracy estimates. One of the major obstacles was the question of how
 to deal with shared peptides and protein grouping. An implementation
 of Fido~\cite{serang2010efficient}, which has been part of the
-Percolator package since {\em FIXME: state year}, addresses these two
-issues but is too computationally expensive to apply to large-scale
-datasets. We therefore compared four straightforward and scalable
-protein inference methods: using the best scoring peptide, the two
-peptide rule \cite{FIXME}, the product of peptide-level posterior
-error probabilities (PEPs), and Fisher's method for combining
-independent $p$~values.
+Percolator package since 2012, addresses these two issues but is too
+computationally expensive to apply to large-scale datasets. We
+therefore compared four straightforward and scalable protein inference
+methods: using the best scoring peptide, the two peptide
+rule~\cite{carr2004need} {\em FIXME: I'm not sure this is the right
+article to cite for this. --Matthew}, the product of peptide-level
+posterior error probabilities (PEPs), and Fisher's method for
+combining independent $p$~values.
 
 Although each of these methods is efficient to compute, they each
 offer specific pros and cons.  Savitski {\em et
   al.}~\cite{savitski2015scalable} showed that, on large-scale
-datasets, taking the best scoring peptide as the representantive of a
+datasets, taking the best scoring peptide as the representative of a
 protein was superior to incorporating information from lower scoring
 peptides. However, this approach is unsatisfying because the method
 discards all information but the best scoring PSMs for each protein.
@@ -139,23 +140,37 @@ alternative that takes into account even more evidence is to compute
 the product of peptide-level PEPs. This procedure takes into account
 all peptides within a protein and provides some protection against
 one-hit wonders~\cite{cox2008maxquant}. The method also has the
-benefit of being robust to incorrect peptide identifications as it
-just gives a multiplication by $1.0$. {\em FIXME: The previous
-  sentence doesn't make sense to me.  I think you mean that it is
-  robust to missing peptides.  Can you clarify? --Bill} A drawback to
+benefit of correct proteins being relatively unaffected by incorrect
+peptide identifications as it typically just gives a multiplication by
+a PEP close to $1.0$. {\em FIXME: The previous sentence doesn't make
+sense to me.  I think you mean that it is robust to missing peptides. 
+Can you clarify? --Bill, I meant that having incorrect peptides does
+not penalize the score as it does in Fisher's method. However, your
+take on it is actually also true. --Matthew} A drawback to
 using the product of PEPs is that it is not obvious how to scale the
 resulting product to take into account protein length.  Also, it is
 not obvious {\em a priori} that the independence assumption implicit
 in taking the product applies in this case.  The latter concern also
 applies to Fisher's method, which is a classical technique for
-combining independent $p$~values \cite{FIXME}.  Like the product of
+combining independent $p$~values~\cite{fisher1925statistical} {\em
+FIXME: Again, I'm not sure this is the right
+article to cite for this. --Matthew}. Like
+the product of
 PEPs, Fisher's method takes into account all peptides of a protein and
 penalizes one-hit wonders in the presence of many incorrect peptide
 identifications~\cite{spirin2011assigning, alves2015mass,
   granholm2013determining}. {\em FIXME: I'm still confused by ``in the
   presence of many incorrect peptide identifications.''  Also, I think
   you should avoid saying ``peptide identification'' and use the term
-  ``detection'' instead. --Bill} This last characteristic can however
+  ``detection'' instead. --Bill, With incorrect peptide
+identifications I mean spurious hits to peptides of a present
+protein. They often will have a bad score (high p-value or PEP) and
+can drive up the p-value of a present protein using Fisher's method.
+I agree with the need to avoid peptide ``identification'', but I don't
+really like the term peptide ``detection'' as it does not reflect the
+matching procedure, would you be okay with peptide
+``inference'' and protein ``inference''? --Matthew} This last
+characteristic can however
 also be a disadvantage, as many incorrect peptide identifications can
 overrule a minority of correct peptide identifications.  Unlike the
 product of PEPs, Fisher's method explicitly accounts for the number of
@@ -165,30 +180,37 @@ $p$~values being combined and hence normalizes for protein length.
 
 We downloaded a set of spectra, comprising $2212$ runs on $17$ adult
 tissues, $7$ fetal tissues, and $6$ hematopoietic cell types with a
-total of $21$ million spectra from~\cite{kim2014draft}. {\em FIXME: I
-  got 24,931,642 spectra. --Bill} The
+total of $25$ million spectra from~\cite{kim2014draft}. {\em FIXME: I
+  got 24,931,642 spectra. --Bill, You are right, I counted the
+spectra after processing with Bullseye. --Matthew} The
 samples were analyzed on an LTQ Orbitrap Velos and Elite
 (Thermo Scientific) equipped with an Easy-nLC II nanoflow LC System
 (Waters). We will refer to this set as the {\em Kim} set.
 
 For verification of the accuracy of protein-level FDR estimates we
-additionally downloaded spectra from yeast cells, collected on an LTQ
-Orbitrap Velos (Thermo Scientific), as described in Moruz {\em et
-  al.}~\cite{moruz2013}. {\em FIXME: State how many spectra, how many
-  injections, and what state the cells were in (log phase
-  growth?). --Bill} We will refer to this set as the {\em hm\_yeast}
-set.
+additionally downloaded spectra from $3$ injections of yeast cells
+grown to mid-log phase, collected on an LTQ Orbitrap Velos (Thermo
+Scientific), as described in Moruz {\em et al.}~\cite{moruz2013},
+consisting of $92\,974$ spectra. {\em FIXME: State how many spectra,
+how many injections, and what state the cells were in (log phase
+growth?). --Bill, Added the extra info. --Matthew} We will refer to
+this set as the {\em hm\_yeast} set.
 
 Converting the RAW files to MS1 and MS2 files was done with
-Proteowizard~\cite{kessner2008}. {\em FIXME: State any options that
-  were used.  I used {\bf msconvert --ms2 --gzip --filter "peakPicking
-    vendor msLevel=2" --filter ``MS2Deisotope Poisson'' *.raw} --Bill} Next, we assigned high-resolution
-precursor masses and charges using information from the precursor
-scans with Hardkl\"{o}r \cite{hoopmann2007} followed by Bullseye
-\cite{hsieh2009}, through the Crux 2.0 package
-interface~\cite{mcilwain2014}.  {\em FIXME: Default parameters?  If
-  so, say so.  Also, it would be good to state the full version
-  number. --Bill}
+Proteowizard~\cite{kessner2008} with vendor peak picking for the MS2
+spectra and all other options left to their default values. {\em
+FIXME: State any options that were used.  I used {\bf msconvert --ms2
+--gzip --filter "peakPicking vendor msLevel=2" --filter ``MS2Deisotope
+Poisson'' *.raw} --Bill, Added some settings, is this enough or do you
+want the whole command line? --Matthew} Next, we assigned
+high-resolution precursor masses and charges using information from
+the precursor scans with Hardkl\"{o}r \cite{hoopmann2007} followed by
+Bullseye \cite{hsieh2009}, both with the default parameters, through
+the Crux 2.0 package interface~\cite{mcilwain2014}.  {\em FIXME:
+Default parameters?  If so, say so.  Also, it would be good to state
+the full version number. --Bill, Added statement about default
+parameters. I used the ``released'' Crux version 2.0, not a latest
+build, or do you mean versions of Bullseye and Hardklor? --Matthew}
 
 For the {\em Kim} set, the data was searched against the human
 Swissprot and Swissprot+TrEMBL databases (accessed: 2015 Nov 12)
@@ -197,21 +219,26 @@ concatenated with a database of common contaminants (source:
 using the Tide search engine, again through the Crux interface. We
 used semi-tryptic searches and Tide's default fragment tolerance. The
 other search parameters were kept the same as in~\cite{kim2014draft}
-(10 ppm precursor window, fully tryptic digestion, up to 2 missed
-cleavages, up to 2 oxidations of methionine per peptide, variable
-acetylation of N-termini {\em FIXME: Please check that these
-  parameters are correct. --Bill}) , except that we did not include
+(10 ppm precursor window, up to 2 missed cleavages, up to 2 oxidations
+of methionine per peptide, variable acetylation of N-termini {\em
+FIXME: Please check that these parameters are correct. --Bill, Removed
+the fully tryptic parameter, as we changed that to semi-tryptic. The
+rest was correct. --Matthew}) , except that we did not include
 variable modifications for the cyclization of N-terminal glutamine.
 For the decoy proteins, we reversed the target protein sequences, and
 separate searches were done on the target and decoy protein database
-for input to Percolator. {\em FIXME: Oh no!  Isn't this a huge
-  problem?  Why did you do separate searches? --Bill}
+for input to Percolator 3.0. Unless stated otherwise, Percolator was
+run with the default parameters, which includes target-decoy
+competition on the PSMs. {\em FIXME: Oh no! Isn't this a huge problem?
+ Why did you do separate searches? --Bill, We did TDC in Percolator,
+that should be fine, right? Maybe we should add a citation
+for TDC then. --Matthew}
 
 \subsection*{Subset scoring}
 
 By default, Percolator's semi-supervised learning algorithm randomly
 splits the training set into three subsets and computes trains three
-separate SVN classifiers, each trained on two of the three subsets and
+separate SVM classifiers, each trained on two of the three subsets and
 tested on the remaining subset.  The final scores are thus calculated
 using the classifier for which the PSM was in the test set. However,
 to implement subset scoring, we applied the normal training algorithm
@@ -223,7 +250,8 @@ score was computed as the average of the scores from these three SVMs.
 We assessed the accuracy and stability of FDR estimates on the {\em
   hm\_yeast} data set by using a {\em sample} and {\em entrapment}
 database, as previously described~\cite{granholm2013determining}. The
-yeast Swissprot database (\url{FIXME}, accessed: 2016 Mar 15) was
+yeast Swissprot database (\url{http://www.uniprot.org/},
+accessed: 2016 Mar 15) was
 taken as the sample database, and the entrapment database was created
 by shuffling the peptide sequences of the sample database. This
 process was repeated nine times, making the target database $10$ times
@@ -251,8 +279,8 @@ decoy protein database.
 
 For the {\em Kim set}, the Tide searches on the human Swissprot
 database resulted in $73$ million target and decoy PSMs and
-post-processing with Percolator resulted in $7\,928\,551$ significant
-PSMs and $298\,095$ unique target peptides at a $q$ value threshold of
+post-processing with Percolator resulted in $7\,928\,454$ significant
+PSMs and $298\,301$ unique target peptides at a $q$ value threshold of
 $0.01$.
 
 To characterize the performance of the scoring vectors resulting from
@@ -306,7 +334,7 @@ hypothesis that the protein is absent from the sample~\cite{the:how}.
 As a counter measure, we strived to mitigate the problem by ensuring
 that the entrapment database is very large compared to the sample
 database, and thereby reducing the frequency of inadvertently
-identifed absent sample proteins.
+identified absent sample proteins.
 
 %FIXME: find a better reference for protein grouping approach?
 First, we compared the four protein inference methods while retaining
@@ -401,7 +429,7 @@ identifiable protein entities considerably.} We did a fully tryptic
 digestion with no miscleavages of three human protein databases:
 Swissprot, Swissprot together with TrEMBL and Ensembl. We considered
 peptides with lengths of $6$ to $50$ amino acids. TrEMBL and Ensembl
-contain many proteoforms and therefore benefit signficantly from this
+contain many proteoforms and therefore benefit significantly from this
 particular protein grouping approach in terms of number of
 identifiable protein entities, {\em i.e.}, single proteins or protein
 groups. Note that, unfortunately, some protein groups will remain
@@ -478,7 +506,7 @@ package.
     \end{tabular}
   \end{center}
   \caption{\label{tab:pandey-stats}\textbf{Using the best scoring
-peptide as a protein's representantive identified the most protein
+peptide as a protein's representative identified the most protein
 groups.} We examined the number of protein identifications for the
 four protein inference method using only peptides unique to one of
 the protein groups formed by the approach from Nesvizhskii {\em et
@@ -505,7 +533,7 @@ Particularly our subset sampling strategy, that trains and tests on
 the same data will only avoid problems of overfitting when the
 strategy is carried out on large datasets.
 
-The most succesful protein inference method turned out to be the one
+The most successful protein inference method turned out to be the one
 where proteins were grouped by their theoretical peptide sets and only
 the best scoring peptide was considered. This implies that the
 algorithm excludes the majority of the PSMs in its final protein list,
@@ -523,7 +551,7 @@ This can clearly be seen in the poor performance of Fisher's method
 for combining $p$ values on the {\em Kim} set. Setting
 peptide-level thresholds can actually bring Fisher's method up to par
 with the best scoring peptide approach (data not shown). However,
-it does not produce signficantly more protein identifications,
+it does not produce significantly more protein identifications,
 while introducing an extra parameter that needs to be set correctly.
 
 The protein grouping of Nesvizhskii {\em et al.} employed here still
@@ -547,7 +575,7 @@ obtaining significance measures per run or data set and combining them
 afterwards is not at all straightforward and should be handled with
 the greatest caution~\cite{serang2015solution}. This new version of
 Percolator opens up for the possibility of easily obtaining
-statistical signficance measures on aggregated data from a great
+statistical significance measures on aggregated data from a great
 number of runs without running this risk.
 
 \section*{Acknowledgements}
