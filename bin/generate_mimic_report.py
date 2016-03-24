@@ -21,7 +21,7 @@ def main():
   options["method"] = "fisher" # fisher, twopept, bestpept, multPEP
   options["targetDecoyAnalysis"] = "picked" # picked, classic, pval
   options["removeSharedPeptides"] = False
-  options["proteinGroupingThreshold"] = 0.05
+  options["proteinGroupingThreshold"] = 0.01
   optionsArray.append(options)
   
   options = copy.deepcopy(options)
@@ -36,7 +36,7 @@ def main():
   options["method"] = "multPEP" # fisher, twopept, bestpept, multPEP
   optionsArray.append(options)
   
-  plt.suptitle("Mimic hm\_yeast", fontsize = 24, fontweight = 'bold')
+  #plt.suptitle("Mimic hm\_yeast", fontsize = 24, fontweight = 'bold')
   
   colors = dc.get_distinct_grey(len(optionsArray))
   
@@ -53,28 +53,63 @@ def main():
     
     qvals, fdrs, fomrs, tpfp = getQvalues(fileName, totalDbProteins)
     numSignificant = sum(1 if qval < 0.01 else 0 for qval in qvals)
-    print "#significant proteins Reported 1% FDR:", numSignificant
-    print "#significant proteins Observed 1% FDR:", sum(1 if qval < 0.01 else 0 for qval in fdrs)
+    print "#significant protein groups Reported 1% FDR:", numSignificant
+    print "#significant protein groups Observed 1% FDR:", sum(1 if qval < 0.01 else 0 for qval in fdrs)
     print "Observed FDR at reported 1% FDR:", fdrs[numSignificant-1]
     plotQvalues(qvals, fdrs, fomrs, tpfp, options, colors[i])
   
-  plt.figure(2)
-  x = np.linspace(0, 1, num=1000)
-  plt.plot(x, x, 'k--')
+  upperMargin = 1.5
+  lowerMargin = 1.0/upperMargin
+  
+  xlabel = "Decoy FDR"
+  ylabel = "Obs. entrapment FDR"
+  labelFontSize = 30
+  
+  plt.figure(1)
+  x = np.linspace(1e-20, 1, num=1000)
+  plt.axis([0, 1, 0, 1])
+  plt.plot(x, x, 'k-')
+  plt.plot(x, [a*upperMargin for a in x], 'k--')
+  plt.plot(x, [a*lowerMargin for a in x], 'k--')
+  plt.xlabel(xlabel, fontsize = labelFontSize)
+  plt.ylabel(ylabel, fontsize = labelFontSize)
   plt.legend(loc = 'lower right', prop={'size':24})
   setAxisFontSize(20)
   plt.tight_layout()
   
+  plt.figure(2)
+  plt.plot(x, x, 'k-')
+  plt.plot(x, [a*upperMargin for a in x], 'k--')
+  plt.plot(x, [a*lowerMargin for a in x], 'k--')
+  plt.axis([0, 0.1, 0, 0.1])
+  plt.xlabel(xlabel, fontsize = labelFontSize)
+  plt.ylabel(ylabel, fontsize = labelFontSize)
+  plt.legend(loc = 'lower right', prop={'size':24})
+  setAxisFontSize(20)
+  plt.tight_layout()
+  
+  plt.figure(3)
+  plt.axis([0, 0.2, 0, 0.2])
+  plt.xlabel("False Ommission Rate", fontsize = labelFontSize)
+  plt.ylabel(ylabel, fontsize = labelFontSize)
+  
   plt.figure(4)
   plt.plot([0.01, 0.01], [0, 2000], 'k', linestyle = 'dotted')
   plt.xlim([0, 0.05])
+  plt.ylim([0, 1200])
+  plt.xlabel(ylabel, fontsize = labelFontSize)
+  plt.ylabel("Sample protein groups", fontsize = labelFontSize)
   plt.legend(loc = 'lower right', prop={'size':24})
   setAxisFontSize(20)
   plt.tight_layout()
   
   plt.figure(5)
-  x = np.linspace(-5, 1, num=1000)
-  plt.plot(x, x, 'k--')
+  plt.plot([np.log10(a) for a in x], [np.log10(a) for a in x], 'k-')
+  plt.plot([np.log10(a) for a in x], [np.log10(a*upperMargin) for a in x], 'k--')
+  plt.plot([np.log10(a) for a in x], [np.log10(a*lowerMargin) for a in x], 'k--')
+  plt.axis([-3, -1, -3, -1])
+  plt.xlabel("$\log_{10}$(" + xlabel + ")", fontsize = labelFontSize)
+  plt.ylabel("$\log_{10}$(" + ylabel + ")", fontsize = labelFontSize)
   plt.legend(loc = 'lower right', prop={'size':24})
   setAxisFontSize(20)
   plt.tight_layout()
@@ -104,6 +139,9 @@ def getQvalues(fileName, totalProteins):
   
   numAbsentProteins = totalProteins/10*9
 
+  numProteins = 0
+  printed = False
+  
   for i in range (1, len(table)):
     reportedQvalue = float(table[i][2])
     
@@ -115,6 +153,7 @@ def getQvalues(fileName, totalProteins):
       nextProteinGroup = -1
     
     for proteinId in proteinName.split(","):
+      numProteins += 1
       proteinAbsent = proteinId.startswith("mimic")
       if proteinAbsent:
         fpSeen = True
@@ -143,16 +182,14 @@ def getQvalues(fileName, totalProteins):
     tpfp.append([tp,fp])
     qvals.append(reportedQvalue)
     fdrs.append(fdr)
+    if fdr > 0.01 and not printed:
+      print "Number of proteins with Observed FDR < 1%:", numProteins
+      printed = True
     fomrs.append(fomr)
   return qvals, fdrs, fomrs, tpfp
 
 def plotQvalues(qvals, fdrs, fomrs, tpfp, options, color):    
-  numRows = 2
-  numCols = 2
-  
-  xlabel = "$FDR_{REV}$"
-  ylabel = "Observed $FDR_{TRAP}$"
-  labelFontSize = 30
+  #numRows, numCols = 2, 2
   figIdx = 1
   
   #numIds = sum(1 for fdr in qvals if fdr < 0.01)
@@ -160,48 +197,31 @@ def plotQvalues(qvals, fdrs, fomrs, tpfp, options, color):
   
   #plt.subplot(numRows, numCols, figIdx)
   plt.figure(figIdx)
-  x = np.linspace(0, 1, num=1000)
   plt.plot(qvals, fdrs, label = options["method"], linewidth = 2, color = color)
-  plt.plot(x, x, 'k--')
-  plt.axis([0, 1, 0, 1])
-  plt.xlabel(xlabel, fontsize = labelFontSize)
-  plt.ylabel(ylabel, fontsize = labelFontSize)
   
   figIdx += 1
   
   #plt.subplot(numRows, numCols, figIdx)
   plt.figure(figIdx)
   plt.plot(qvals, fdrs, label = options["method"], linewidth = 2, color = color)
-  plt.axis([0, 0.1, 0, 0.1])
-  plt.xlabel(xlabel, fontsize = labelFontSize)
-  plt.ylabel(ylabel, fontsize = labelFontSize)
   
   figIdx += 1
   
   #plt.subplot(numRows, numCols, figIdx)
   plt.figure(figIdx)
   plt.plot(fomrs, fdrs, label = options["method"], linewidth = 2, color = color)
-  plt.axis([0, 0.2, 0, 0.2])
-  plt.xlabel("False Ommission Rate", fontsize = labelFontSize)
-  plt.ylabel(ylabel, fontsize = labelFontSize)
   
   figIdx += 1
   
   #plt.subplot(numRows, numCols, figIdx)
   plt.figure(figIdx)
   plt.plot([x[1]/float(x[1]+x[0]) for x in tpfp], [x[0] for x in tpfp], label = options["method"], linewidth = 2, color = color)
-  plt.ylim([0, 1200])
-  plt.xlabel(ylabel, fontsize = labelFontSize)
-  plt.ylabel("Sample proteins", fontsize = labelFontSize)
   
   figIdx += 1
   
   #plt.subplot(numRows, numCols, figIdx)
   plt.figure(figIdx)
   plt.plot([np.log10(qval + 1e-20) for qval in qvals], [np.log10(fdr+1e-20) for fdr in fdrs], label = options["method"], linewidth = 2, color = color)
-  plt.axis([-3, -1, -3, -1])
-  plt.xlabel("$\log_{10}$(" + xlabel + ")", fontsize = labelFontSize)
-  plt.ylabel("$\log_{10}$(" + ylabel + ")", fontsize = labelFontSize)
    
 if __name__ == "__main__":
   main()

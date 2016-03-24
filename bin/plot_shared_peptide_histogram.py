@@ -6,7 +6,9 @@ import csv
 #peptideFile = "/home/matthew/mergespec/data/103111-Yeast-2hr/percolator_tdc/tab/103111-Yeast-2hr.percolator.tab.peptides"
 #peptideFile = "/media/storage/mergespec/data/Linfeng/percolator_tdc/tab/Linfeng.percolator.tab.peptides"
 #peptideFile = "/home/matthew/mergespec/data/103111-Yeast-2hr/percolator_tdc_full_digest_n2/tab/103111-Yeast-2hr.percolator.tab.peptides"
-peptideFile = "/home/matthew/mergespec/data/103111-Yeast-2hr/percolator_tdc/tab/103111-Yeast-2hr.percolator.tab.peptides"
+#peptideFile = "/home/matthew/mergespec/data/103111-Yeast-2hr/percolator_tdc/tab/103111-Yeast-2hr.percolator.tab.peptides"
+#peptideFile = "/media/storage/mergespec/data/Pandey/percolator_tdc/tab_subset_500k/Pandey.percolator.tab.peptides"
+peptideFile = "/media/storage/mergespec/data/Pandey/percolator_tdc_uniprot/tab_uppmax/Pandey.percolator.tab.peptides"
 reader = csv.reader(open(peptideFile, 'rb'), delimiter = '\t')
 
 reader.next()
