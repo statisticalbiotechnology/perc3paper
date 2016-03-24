@@ -63,7 +63,7 @@ with the increasing awareness for the need for reliable statistics on
 the protein level, we compared several easy-to-understand protein
 inference methods and implemented the best-performing
 method---grouping proteins by their corresponding sets of theoretical
-peptides and then considering only the best scoring peptide for each
+peptides and then considering only the best-scoring peptide for each
 protein---in the Percolator package. We used Percolator 3.0 to analyze
 the data from a recent study of the draft human proteome containing 25
 million spectra (PM:24870542).
@@ -116,7 +116,7 @@ of Fido~\cite{serang2010efficient}, which has been part of the
 Percolator package since 2012, addresses these two issues but is too 
 computationally expensive to apply to large-scale datasets. We 
 therefore compared four straightforward and scalable protein inference 
-methods: using the best scoring peptide, the two-peptide 
+methods: using the best-scoring peptide, the two-peptide 
 rule~\cite{carr2004need, gupta2009false}, the product of 
 peptide-level posterior error probabilities (PEPs), and Fisher's 
 method for combining independent $p$~values.
@@ -124,10 +124,10 @@ method for combining independent $p$~values.
 Although each of these methods is efficient to compute, they each
 offer specific pros and cons.  Savitski {\em et
   al.}~\cite{savitski2015scalable} showed that, on large-scale
-datasets, taking the best scoring peptide as the representative of a
+datasets, taking the best-scoring peptide as the representative of a
 protein was superior to incorporating information from lower scoring
 peptides. However, this approach is unsatisfying because the method
-discards all information but the best scoring PSMs for each protein.
+discards all information but the best-scoring PSMs for each protein.
 Perhaps the simplest way to combine evidence at the peptide level is
 widely used the two-peptide rule.  This approach requires evidence for
 a second peptide to support a protein inference, thereby preventing
@@ -146,23 +146,23 @@ Also, it is not obvious {\em a priori} that the independence
 assumption implicit in taking the product applies in this case.  The
 latter concern also applies to Fisher's method, which is a classical
 technique for combining independent
-$p$~values~\cite{fisher1925statistical} {\em FIXME: Again, I'm not
-  sure this is the right article to cite for this. --Matthew}. Like
-the product of PEPs, Fisher's method takes into account all peptides
-of a protein, penalizing one-hit wonders on the basis of its many
-accompanying incorrect peptide
-identifications~\cite{spirin2011assigning, alves2015mass,
-  granholm2013determining}. {\em FIXME: I think you should avoid
-  saying ``peptide identification'' and use the term ``detection''
-  instead. --Bill I agree with the need to avoid peptide
+$p$~values~\cite{fisher1925statistical} {\em FIXME: I'm not sure this
+  is the right article to cite for this. --Matthew}. Like the product
+of PEPs, Fisher's method takes into account all peptides of a protein,
+penalizing one-hit wonders on the basis of its many accompanying
+incorrect peptide identifications~\cite{spirin2011assigning,
+  alves2015mass, granholm2013determining}. {\em FIXME: I think you
+  should avoid saying ``peptide identification'' and use the term
+  ``detection'' instead. --Bill I agree with the need to avoid peptide
   ``identification'', but I don't really like the term peptide
   ``detection'' as it does not reflect the matching procedure, would
   you be okay with peptide ``inference'' and protein ``inference''?
-  --Matthew} This last characteristic can however also be a
-disadvantage, as many incorrect peptide identifications can overrule a
-minority of correct peptide identifications.  Unlike the product of
-PEPs, Fisher's method explicitly accounts for the number of $p$~values
-being combined and hence normalizes for protein length.
+  --Matthew This is worth discussing with both Lukas and Mike. --Bill}
+This last characteristic can however also be a disadvantage, as many
+incorrect peptide identifications can overrule a minority of correct
+peptide identifications.  Unlike the product of PEPs, Fisher's method
+explicitly accounts for the number of $p$~values being combined and
+hence normalizes for protein length.
 
 \section*{Methods}
 
@@ -171,7 +171,7 @@ tissues, $7$ fetal tissues, and $6$ hematopoietic cell types with a
 total of $\sim 25$ million spectra from~\cite{kim2014draft}. The
 samples were analyzed on an LTQ Orbitrap Velos and Elite (Thermo
 Scientific) equipped with an Easy-nLC II nanoflow LC System
-(Waters). We will refer to this set as the {\em Kim} set.
+(Waters). We will refer to this set as the Kim data set.
 
 For verification of the accuracy of protein-level false discovery rate 
 (FDR) estimates we additionally downloaded $92\,974$ spectra from 
@@ -189,7 +189,7 @@ information from the precursor scans with Hardkl\"{o}r
 the default parameters, through the Crux 2.0 package
 interface~\cite{mcilwain2014}.
 
-For the {\em Kim} set, the data was searched against the human
+For the Kim data set, the data was searched against the human
 Swissprot and Swissprot+TrEMBL databases (accessed: 2015 Nov 12)
 concatenated with a database of common contaminants (source:
 \url{http://maxquant.org/contaminants.zip}, accessed: 2015 Apr 17)
@@ -231,8 +231,8 @@ and entrapment database by keeping $4\%$ of the sample peptides
 unshuffled. This corresponded to the shared peptide rate in the
 original Swissprot yeast sample database.
 
-{\em FIXME: Change figure captions to use ``decoy FDR'' and
-  ``entrapment FDR.'' --Bill}
+{\em FIXME: Change figure captions to use ``Entrapment FDR'' intead of
+  ``Obs. entrapment FDR.'' --Bill}
 
 Note that, in the comparison of the decoy FDR, {\em i.e.}, the FDR 
 estimates from the decoy model with reversed sequences, to the 
@@ -246,7 +246,7 @@ this problem by ensuring that the entrapment database was very large
 compared to the sample database, thereby reducing the frequency of 
 inadvertently identified absent sample proteins.
 
-The {\em Kim} set was used as an indication of the performance on
+The Kim data set was used as an indication of the performance on
 large-scale data. We calculated FDR estimates
 using the picked target-decoy strategy for all
 methods~\cite{savitski2015scalable}.
@@ -257,7 +257,7 @@ using trypsin (including cleavage suppression by proline) with no
 miscleavages and peptide lengths of $[7,50]$, specifically chosen to
 prevent unintended shared peptides between the sample and entrapment
 databases. The procedure for the decoy model was identical to the one 
-mentioned above for the {\em Kim} set.
+mentioned above for the Kim data set.
 
 \section*{Results}
 
@@ -289,7 +289,7 @@ $7\,928\,454$ significant PSMs and $298\,301$ unique target peptides
 at a $q$~value threshold of $0.01$.  To characterize the performance
 of the SVM learning procedure when training on subsets of the PSMs, we
 randomly selected subsets of $100\,000, 500\,000, 1\,000\,000$ and
-$5\,000\,000$ PSMs from the Kim set.  We trained using these subsets
+$5\,000\,000$ PSMs from the Kim data set.  We trained using these subsets
 and applied the trained classifier to the full data set. Preliminary
 results showed that including target and decoy PSMs belonging to the
 same spectrum together during the selection of random subsets gave a
@@ -469,21 +469,17 @@ inference method.
   {./img/shared-pept-performance-fdr1}\\
 (A) & (B) & (C)
 \end{tabular}
-\caption{\label{fig:shared-performance}\textbf{Comparison of protein 
-detection methods when retaining shared peptides.} We plotted the 
-number of sample proteins, which can be considered an estimate for the 
-number of true identifications, against the observed entrapment FDR 
-using a peptide-level FDR threshold of $10\%$ (A), $5\%$ (B) and $1\%$ 
-(C). Whereas Fisher's method, the product of peptide-level PEPs and 
-the two peptide rule initially pick up many sample proteins, the best 
-scoring peptide approach immediately breaks down. Stricter 
-peptide-level thresholds increase the number of protein detections at 
-$1\%$ protein-level FDR for the $3$ other methods. {\em FIXME: The 
-text never specifically refers to panel B.  Perhaps it should be 
-deleted.  --Bill. I think it is a useful plot to have, as some readers 
-might wonder if the decreased accuracy is worth it if the performance 
-is much better. I moved it to the ``Selection of a protein inference 
-strategy'' section. --Matthew}}
+\caption{\label{fig:shared-performance}\textbf{Comparison of protein
+    detection methods when retaining shared peptides.} We plotted the
+  number of sample proteins, which can be considered an estimate for
+  the number of true identifications, against the observed entrapment
+  FDR using a peptide-level FDR threshold of $10\%$ (A), $5\%$ (B) and
+  $1\%$ (C). Whereas Fisher's method, the product of peptide-level
+  PEPs and the two peptide rule initially pick up many sample
+  proteins, the best-scoring peptide approach immediately breaks
+  down. Stricter peptide-level thresholds increase the number of
+  protein detections at $1\%$ protein-level FDR for the $3$ other
+  methods.}
 \end{center}
 \end{figure}
 
@@ -499,7 +495,7 @@ average of 1.02 when only using unique peptides. --Matthew}
     plots the number of accepted protein groups against the observed
     entrapment FDR for (A) the hm\_yeast and (B,C) Kim data
     sets. Fisher's method, the product of peptide-level PEPs and the
-    best scoring peptide approach all perform about equally, while the
+    best-scoring peptide approach all perform about equally, while the
     two peptide rule is much less sensitive.  {\em FIXME: Isn't it
       worrisome that, for the yeast data set, the best-scoring peptide
       approach seems to do worse than Fisher and multPEP? --Bill. 
@@ -521,7 +517,7 @@ two different databases (Swissprot and Swissprot+TREMBL).  Even for
 such large-scale data, all four protein inference methods took less
 than a minute of processing time due to their simplicity. We looked at
 the number of identified proteins at $1\%$ reported protein-level FDR
-(Table~\ref{tab:pandey-stats}).  The best scoring peptide approach
+(Table~\ref{tab:pandey-stats}).  The best-scoring peptide approach
 identified the most protein groups with a $3\%$ margin over the second
 best method. Fisher's method identified much fewer proteins than the
 other three methods, due to incorrect peptides dragging down the $p$
@@ -547,7 +543,7 @@ in the latest Percolator package.
     \hline
     partial digestion & Swissprot & Swissprot+TrEMBL\\
     \hline
-    Best scoring peptide & 12\,370 & 5\,909\\
+    Best-scoring peptide & 12\,370 & 5\,909\\
     Product peptide-level PEPs & 11\,968 & 5\,626\\
     Two peptide rule & 11\,409 & 4\,231\\
     Fisher's method & 8\,964 & 3\,717\\
@@ -564,78 +560,87 @@ in the latest Percolator package.
 
 \section*{Discussion}
 
-We demonstrated that Percolator 3.0 can calculate protein-level FDRs
-on a human proteome scale study, in this case $73$ million PSMs, in a
-matter of minutes on a commodity computer.
+We demonstrated that Percolator 3.0 can calculate accurate
+protein-level FDRs on a human proteome scale study, in this case $73$
+million PSMs, in a matter of minutes on a commodity computer.
 
-The subset scoring shows great stability even when only sampling a
-tiny fraction, as small as $0.1\%$, of the original number of PSMs.
-The {\em Kim} set might not be as representative for other types of
-studies that have greater heterogeneity, but it seems likely that the
-idea will hold as long as the subsets are not chosen too small.
-Particularly our subset sampling strategy, that trains and tests on
-the same data will only avoid problems of overfitting when the
-strategy is carried out on large datasets.
+The downsampling approach shows great stability even when only
+sampling a tiny fraction, as small as $0.1\%$, of the original set of
+PSMs.  The Kim data set might not be as representative for other
+types of studies that have greater heterogeneity, but it seems likely
+that the idea will hold as long as the selected subsets are not too
+small.  {\em FIXME: I think the relevant value is actually the number
+  of target PSMs available to the first round of SVM training. Maybe
+  we should report this value somewhere.  --Bill} In particular, our
+downsampling strategy, which involves some overlap between training
+and test sets, will only avoid problems of overfitting when the
+strategy is carried out on large datasets. {\em FIXME: I don't
+  understand why this is necessary?  Why can't you downsample first
+  and then do all the cross-validation the same as usual? --Bill}
 
 The most successful protein inference method turned out to be the one
 where proteins were grouped by their theoretical peptide sets and only
-the best scoring peptide was considered. This implies that the
-algorithm excludes the majority of the PSMs in its final protein list,
-something that may feel quite unsatisfying. With regards to the
-discarded shared peptides, large-scale studies give us the luxury of a
-deep coverage of the present peptides and therefore identify many
+the best-scoring peptide was considered. In this approach, the score
+assigned to a protein essentially ignores the majority of the PSMs,
+something that may feel quite unsatisfying. On the other hand,
+including evidence from other, lower scoring peptide identifications
+is difficult because it often involves lumping incorrect peptide
+identifications into correct protein identifications.  This problem
+can clearly be seen in the poor performance of Fisher's method for
+combining $p$ values on the Kim data set. Setting peptide-level
+thresholds can actually bring Fisher's method up to par with the
+best-scoring peptide approach (data not shown). However, this
+modification does not produce significantly more protein
+identifications, while introducing an extra parameter that needs to be
+set correctly.
+
+With regards to the discarded shared peptides, large-scale studies
+give us the luxury of deep coverage, therefore identifying many
 peptides that are unique to a protein. This mitigates the problem of
-ignoring shared peptides in terms of number of protein identifications
-and makes the task of protein inference much simpler and intuitive.
+ignoring shared peptides and makes the task of protein inference much
+simpler and intuitive.  {\em FIXME: But this raises the question, does
+  this method still work for smaller studies? --Bill}
 
-The main problem in including the evidence of the other lower scoring
-peptide identifications is the difficulty in dealing with incorrect
-peptide identifications belonging to correct protein identifications.
-This can clearly be seen in the poor performance of Fisher's method
-for combining $p$ values on the {\em Kim} set. Setting
-peptide-level thresholds can actually bring Fisher's method up to par
-with the best scoring peptide approach (data not shown). However,
-it does not produce significantly more protein identifications,
-while introducing an extra parameter that needs to be set correctly.
+The protein grouping method employed here still suffers from the
+problem that an identification of a protein group leaves open the
+question which proteins in the group are actually correct. Here, we
+interpreted it using the null hypothesis that all proteins in the
+group are incorrect, {\em i.e.}, an identified protein group means
+that we expect at least one of the proteins to be correct, but we are
+agnostic about which one. Compared to the conventional protein
+grouping approach, which is based on identified peptides instead of
+the full set of theoretical peptides, the groups produced by our
+method are much smaller.  Consequently, ambiguity about which specific
+proteins are present is much rarer.  Furthermore, if genes, rather
+than proteoforms, are the entities of interest, then using databases
+with few proteoforms such as Swissprot should do the job.
 
-The protein grouping of Nesvizhskii {\em et al.} employed here still
-suffers from the problem that an identification of a protein group
-leaves open the question which proteins in the group are actually
-correct. Here, we interpreted it using the null hypothesis that all
-proteins in the group are incorrect, {\em i.e.}, an identified protein
-group means that we expect at least one of the proteins to be correct,
-but we are agnostic about which one. Compared to the conventional
-protein grouping approach, however, the groups are much smaller and
-this unsatisfactory answer does not have to be given as often.
-Furthermore, if genes, rather than proteoforms are the entities of
-interest, using databases with few proteoforms such as Swissprot
-should do the job.
-
-The construction of the entrapment database should be considered as a 
-rather crude approximation of true experimental settings and could be 
-improved upon in future work. While it does conserve homologs by 
-shuffling peptide rather than protein sequences, it only allows for 
-simulation of fully-tryptic peptides without miscleavages. 
-Furthermore, the mechanism that creates shared peptides between sample 
-and entrapment database does not do any attempts to model homology. 
-The shared peptides are randomly distributed over all proteins, while 
-in practice we can expect some portion of proteins sharing multiple 
-peptides and many proteins having no shared peptides at all. The rate 
-of shared peptides of $4\%$, modelled after the Swissprot yeast 
-database, is also a good approximation of the shared peptide rate of 
-the Swissprot human database. However, the shared peptide rate in the 
-Swissprot+TrEMBL database is much higher with over $60\%$ of the 
-peptides being shared by at least two proteins, which could result in 
-significantly different outcomes.
+The construction of the entrapment database in this study should be
+considered as a rather crude approximation of true experimental
+settings and could be improved upon in future work. While our approach
+does conserve homologs by shuffling peptide rather than protein
+sequences, the method only allows for simulation of fully-tryptic
+peptides without missed cleavages.  Furthermore, the mechanism that
+creates shared peptides between sample and entrapment database does
+not attempt to model homology.  In our approach, the shared peptides
+are randomly distributed over all proteins, whereas in practice we can
+expect some portion of proteins to share multiple peptides and many
+proteins to have no shared peptides at all. The rate of shared
+peptides---$4\%$, modelled after the Swissprot yeast database---is
+also a good approximation of the shared peptide rate of the Swissprot
+human database. However, the shared peptide rate in the
+Swissprot+TrEMBL database is much higher, with over $60\%$ of the
+peptides being shared by at least two proteins.  Modeling this level
+of redundancy could result in significantly different outcomes.
 
 We realize that other parts of the shotgun proteomics analysis
 pipeline might still have significantly higher computing requirements
 than Percolator, but fortunately these can often readily be
-parallelized as the runs can be analyzed independently. However,
-obtaining significance measures per run or data set and combining them
-afterwards is not at all straightforward and should be handled with
-the greatest caution~\cite{serang2015solution}. This new version of
-Percolator opens up for the possibility of easily obtaining
+parallelized as the runs can be analyzed independently. However, as we
+have pointed out elsewhere, obtaining significance measures per run or
+data set and combining them afterwards is not at all straightforward
+and should be handled with great caution~\cite{serang2015solution}.
+This new version of Percolator allows the user to easily obtain
 statistical significance measures on aggregated data from a great
 number of runs without running this risk.
 
