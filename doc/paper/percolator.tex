@@ -117,11 +117,7 @@ Percolator package since 2012, addresses these two issues but is too
 computationally expensive to apply to large-scale datasets. We 
 therefore compared four straightforward and scalable protein inference 
 methods: using the best scoring peptide, the two-peptide 
-rule~\cite{carr2004need, gupta2009false} {\em FIXME: I'm not sure this 
-is the right article to cite for this. --Matthew.  This one at says 
-that the rule is ``common practice'': 
-\url{http://pubs.acs.org/doi/pdf/10.1021/pr9004794} --Bill. Added 
-reference to paper Bill mentioned. --Matthew}, the product of 
+rule~\cite{carr2004need, gupta2009false}, the product of 
 peptide-level posterior error probabilities (PEPs), and Fisher's 
 method for combining independent $p$~values.
 
@@ -235,11 +231,8 @@ and entrapment database by keeping $4\%$ of the sample peptides
 unshuffled. This corresponded to the shared peptide rate in the
 original Swissprot yeast sample database.
 
-{\em FIXME: I think having subscripted stuff in the main text is
-  distracting.  I would lobby to call these simply ``decoy FDR'' and
-  ``entrapment FDR'' throughout. --Bill. That seems reasonable, I 
-changed it in the text, maybe we should change the figure captions 
-as well. --Matthew}
+{\em FIXME: Change figure captions to use ``decoy FDR'' and
+  ``entrapment FDR.'' --Bill}
 
 Note that, in the comparison of the decoy FDR, {\em i.e.}, the FDR 
 estimates from the decoy model with reversed sequences, to the 
@@ -283,9 +276,7 @@ mentioned above for the {\em Kim} set.
   and peptides at a $q$ value threshold of $0.01$ as the fraction
   compared to using the full training set of $73$ million PSMs. The
   number of significant PSMs and unique peptides does not drop
-  significantly, even for subsets of $100\,000$ PSMs. {\em FIXME:
-    Change the vertical axis to range from 0.99 to 1.01. --Bill. 
-Changed the y axis. --Matthew}}
+  significantly, even for subsets of $100\,000$ PSMs.}
 \end{center}
 \end{figure}
 
@@ -306,9 +297,7 @@ more stable performance than sampling without taking this into
 account. Therefore, this strategy was applied in the random sampling
 process. For each random subset size, we calculated the mean and
 standard deviation over $10$ randomized runs of the number of PSMs and
-peptides with $q$ value below $0.01$. {\em FIXME: I think this is a
-  typo, right? It says 0.01 above and in the caption. --Bill. Yes, 
-this should be 0.01. --Matthew}
+peptides with $q$ value below $0.01$.
 
 This experiment showed that using subsets as small as $100\,000$ PSMs
 ($0.14\%$) for SVM training did not significantly reduce the number of
@@ -338,17 +327,17 @@ commodity computers.
 \end{tabular}
 \caption{\label{fig:shared-accuracy}\textbf{Retaining shared peptides
     leads to poor calibration of the decoy model for all protein
-    inference methods.} The figures plots reported $q$~values from
-  the decoy model, the decoy FDR, against the fraction of entrapment
+    inference methods.} The figures plots reported $q$~values from the
+  decoy model, the decoy FDR, against the fraction of entrapment
   proteins in the set of identified target proteins, the observed
   entrapment FDR using a peptide-level FDR threshold of $10\%$ (A),
-  $5\%$ (B) and $1\%$ (C). For a peptide-level FDR threshold of 
-  $10\%$, all four methods produce anti-conservative FDR estimates, 
-  with Fisher's method and product of PEPs achieving reasonable 
-  accuracy above $3\%$ decoy FDR. For the stricter thresholds of 
-  $5\%$ and $1\%$ the FDR estimates of those two methods are 
-  anti-convervative for very low FDRs, but quickly become 
-  conservative for higher FDRs.}
+  $5\%$ (B) and $1\%$ (C). Dotted lines correspond to $y=1.5x$ and
+  $y=0.67x$.  For a peptide-level FDR threshold of $10\%$, all four
+  methods produce anti-conservative FDR estimates, with Fisher's
+  method and product of PEPs achieving reasonable accuracy above $3\%$
+  decoy FDR. For the stricter thresholds of $5\%$ and $1\%$ the FDR
+  estimates of those two methods are anti-convervative for very low
+  FDRs, but quickly become conservative for higher FDRs.}
 \end{center}
 \end{figure}
 
@@ -371,34 +360,22 @@ proteins breaking away from the group due to low-scoring, incorrect
 peptide identifications that are unique to that protein, a
 peptide-level FDR threshold was set at $10\%$.
 
-This experiment showed that the decoy models based on the reversed 
-protein database systematically produce liberal (anti-conservative) 
-FDR estimates (Figure \ref{fig:shared-accuracy}). Fisher's method and 
-the product of peptide-level PEPs are most liberal for small 
-thresholds but manage to provide more reasonable estimates above $\sim 
-3\%$ and $\sim 1\%$ protein-level FDR for a $10\%$ and $5\%$ 
-peptide-level FDR threshold respectively. {\em FIXME: If you want to 
-argue that this is reasonable, maybe make the $y=x$ line solid and add 
-dotted lines for $y=1.5x$ and $y=0.67x$ (or whatever you think 
-constitutes ``reasonable'' performance). --Bill. Added two lines for 
-reasonable estimates and adjusted the reasonable estimates 
-percentages. --Matthew} For the two-peptide rule, not enough decoy 
-proteins remain to see if the FDR estimates will become more accurate 
-at some point, and the best-scoring peptide approach produces 
-dramatically liberal estimates for all thresholds. Taking stricter 
-peptide-level thresholds generally improved the accuracy for 
-Fisher's method and the product of PEPs. {\em FIXME: Where is the 
-data to support this claim? --Bill. Added plots for stricter 
-thresholds, removed claim about larger protein groups which was 
-incorrect. --Matthew} Going down to $5\%$ peptide-level FDR still 
-produced anti-conservative protein-level FDR estimates in the region 
-below $1\%$ protein-level FDR, but going further down to $1\%$ 
-peptide-level FDR actually produced reasonable, though still slightly 
-anti-convervative, estimates in that region. {\em FIXME: add figure 
-for this last claim? --Matthew Yes, it seems like you might need to do 
-this. Maybe replace panel B with a panel using a different threshold. 
---Bill. Added stricter thresholds and changed claim about 1 percent 
-peptide-level FDR as the evidence was not very convincing. --Matthew}
+This experiment showed that the decoy models based on the reversed
+protein database systematically produce liberal (anti-conservative)
+FDR estimates (Figure \ref{fig:shared-accuracy}). Fisher's method and
+the product of peptide-level PEPs are most liberal for small
+thresholds but manage to provide better estimates above $\sim 3\%$ and
+$\sim 1\%$ protein-level FDR for $10\%$ and $5\%$ peptide-level FDR
+thresholds, respectively. For the two-peptide rule, not enough decoy
+proteins remain to see if the FDR estimates will become more accurate
+at some point, and the best-scoring peptide approach produces
+dramatically liberal estimates for all thresholds. Taking stricter
+peptide-level thresholds generally improved the accuracy for Fisher's
+method and the product of PEPs. Going down to $5\%$ peptide-level FDR
+still produced anti-conservative protein-level FDR estimates in the
+region below $1\%$ protein-level FDR, but going further down to $1\%$
+peptide-level FDR actually produced reasonable, though still slightly
+anti-convervative, estimates in that region.
 
 \subsection*{Eliminating shared peptides improves calibration}
 
