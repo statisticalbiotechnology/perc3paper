@@ -354,11 +354,11 @@ First, we compared the four protein inference methods while retaining
 shared peptides. We grouped proteins that had the same set of
 identified peptides, and also added proteins whose identified peptides
 formed a strict subset of this set to each
-group~\cite{serang2012review}.  {\em FIXME: find a better reference
-  for protein grouping approach? --Matthew} To reduce the effect of
-proteins breaking away from the group due to low-scoring, incorrect
-peptide identifications that are unique to that protein, a
-peptide-level FDR threshold was set at $10\%$.
+group~\cite{nesvizhskii2005interpretation, serang2012review}.
+To reduce the effect of proteins breaking away from the
+group due to low-scoring, incorrect peptide identifications that are
+unique to that protein, a peptide-level FDR threshold was set at
+$10\%$.
 
 This experiment showed that the decoy models based on the reversed
 protein database systematically produce liberal (anti-conservative)
@@ -483,10 +483,10 @@ inference method.
 \end{center}
 \end{figure}
 
-{\em FIXME: Need some text to accompany the figure with performance 
-of retaining shared peptides. An important point to make is that the 
-protein groups contain on average 3 to 4 proteins, opposed to an 
-average of 1.02 when only using unique peptides. --Matthew}
+{\em FIXME: Need some text to accompany the figure with performance of
+  retaining shared peptides. An important point to make is that the
+  protein groups contain on average 3 to 4 proteins, opposed to an
+  average of 1.02 when only using unique peptides. --Matthew}
 
 \begin{figure}
   \centering
@@ -495,16 +495,8 @@ average of 1.02 when only using unique peptides. --Matthew}
     plots the number of accepted protein groups against the observed
     entrapment FDR for (A) the hm\_yeast and (B,C) Kim data
     sets. Fisher's method, the product of peptide-level PEPs and the
-    best-scoring peptide approach all perform about equally, while the
-    two peptide rule is much less sensitive.  {\em FIXME: Isn't it
-      worrisome that, for the yeast data set, the best-scoring peptide
-      approach seems to do worse than Fisher and multPEP? --Bill. 
-      Yes it is, but I guess we are mostly interested in the 
-      performance on large-scale data sets in this paper. --Matthew} 
-      {\em FIXME: What about adding two more panels for the Kim data 
-      set and getting rid of the table?  --Bill. Sounds good, I 
-      don't have time to produce them now but I will add them next 
-      time. --Matthew}}
+    best scoring peptide approach all perform about equally, while the
+    two peptide rule is much less sensitive.}
   \label{fig:power}
 \end{figure}
 
@@ -522,20 +514,20 @@ identified the most protein groups with a $3\%$ margin over the second
 best method. Fisher's method identified much fewer proteins than the
 other three methods, due to incorrect peptides dragging down the $p$
 value of correct proteins. {\em FIXME: The previous sentence is an
-  interesting observation. I think you should do some kind of
-  follow-up analysis to verify this hypothesis. --Bill. I have 
-data for the Kim set using a fully tryptic search. This significantly 
-improved the performance of Fisher's method, most likely because less 
-spurious peptides were present per protein. I don't know if that 
-qualifies as a follow-up analysis, but it might be interesting to show
-anyway. --Matthew} Although the
-many proteoforms in the TrEMBL database caused a large drop in the
-number of identifications for all methods, the relative ranking of
-methods was consistent in both sets of results. Overall, we concluded,
-in agreement with Savitski {\em et al.} \cite{savitski2015scalable},
-that the best-scoring peptide approach yielded the best overall
-performance.  We therefore implemented this protein inference method
-in the latest Percolator package.
+interesting observation. I think you should do some kind of follow-up
+analysis to verify this hypothesis. --Bill. I have data for the Kim
+set using a fully tryptic search. This significantly improved the
+performance of Fisher's method, most likely because less spurious
+peptides were present per protein. I don't know if that qualifies as a
+follow-up analysis, but it might be interesting to show
+anyway. --Matthew} Although the many proteoforms in the TrEMBL
+  database caused a large drop in the number of identifications for
+  all methods, the relative ranking of methods was consistent in both
+  sets of results. Overall, we concluded, in agreement with Savitski
+  {\em et al.}  \cite{savitski2015scalable}, that the best-scoring
+  peptide approach yielded the best overall performance.  We therefore
+  implemented this protein inference method in the latest Percolator
+  package.
 
 \begin{table}
   \begin{center}
@@ -646,10 +638,11 @@ number of runs without running this risk.
 
 \section*{Acknowledgements}
 
-This work was supported by National Institutes of Health award P41~GM103533.
-
-%FIXME: add acknowledgement to Uppmax? LK: Check standard formulation
-% from SNIC
+The computations were performed on resources provided by the Swedish
+National Infrastructure for Computing (SNIC) at Uppsala
+Multidisciplinary Center for Advanced Computational Science
+(UPPMAX). This work was supported by National Institutes of Health
+award P41~GM103533.
 
 \bibliographystyle{plain}
 \bibliography{percolator}
