@@ -19,8 +19,8 @@ def main(argv):
   baseFN = "/media/hdd/matthew/mergespec/data/Pandey/percolator_tdc_swissprot_partial_digest/tab_subset_scoring_%s/Pandey.percolator.seed%d.tab.%s"
   
   subsetSizes = ["100K", "500K", "1,0M", "5,0M"]
-  peptideFull = 298095.0
-  psmFull = 7928551.0
+  peptideFull = 298301.0
+  psmFull = 7928454.0
   
   peptideCounts, psmCounts = [], []
   for subsetSize in subsetSizes:
@@ -36,16 +36,18 @@ def main(argv):
   plt.xticks([1, 2, 3, 4], subsetSizes)
   plt.ylabel("Fraction PSMs retained, q < 0.01", fontsize = 18)
   plt.xlabel("Subset size", fontsize = 18)
-  plt.ylim([0.96,1.04])
-  
+  #plt.ylim([0.96,1.04])
+  plt.ylim([0.99,1.01])  
+
   plt.subplot(1,2,1)
   plt.plot([0,5], [1, 1], 'k-')
   plt.boxplot(peptideCounts)
   plt.xticks([1, 2, 3, 4], subsetSizes)
   plt.ylabel("Fraction peptides retained, q < 0.01", fontsize = 18)
   plt.xlabel("Subset size", fontsize = 18)
-  plt.ylim([0.96,1.04])
-  
+  #plt.ylim([0.96,1.04])
+  plt.ylim([0.99,1.01])
+
   plt.tight_layout()
   
   plt.show()
