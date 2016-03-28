@@ -1,8 +1,8 @@
 \documentclass{article}
 \usepackage[a4paper,margin=1in]{geometry}
 
-\title{Fast and accurate protein false discovery rates on human
-proteome study scale with Percolator 3.0}
+\title{Fast and accurate protein false discovery rates on large-scale
+proteomics datasets with Percolator 3.0}
 
 \author{Matthew The\\
 Science for Life Laboratory\\
@@ -146,18 +146,22 @@ Also, it is not obvious {\em a priori} that the independence
 assumption implicit in taking the product applies in this case.  The
 latter concern also applies to Fisher's method, which is a classical
 technique for combining independent
-$p$~values~\cite{fisher1925statistical} {\em FIXME: I'm not sure this
-  is the right article to cite for this. --Matthew}. Like the product
-of PEPs, Fisher's method takes into account all peptides of a protein,
-penalizing one-hit wonders on the basis of its many accompanying
-incorrect peptide identifications~\cite{spirin2011assigning,
-  alves2015mass, granholm2013determining}. {\em FIXME: I think you
-  should avoid saying ``peptide identification'' and use the term
-  ``detection'' instead. --Bill I agree with the need to avoid peptide
-  ``identification'', but I don't really like the term peptide
-  ``detection'' as it does not reflect the matching procedure, would
-  you be okay with peptide ``inference'' and protein ``inference''?
-  --Matthew This is worth discussing with both Lukas and Mike. --Bill}
+$p$~values~\cite{fisher1925statistical}.
+%{\em FIXME: I'm not sure this is the right article to cite for this.
+%--Matthew. This is apt. Particularly as you give more modern cites
+%below. --Lukas}
+Like the product of PEPs, Fisher's method takes into account all
+peptides of a protein, penalizing one-hit wonders on the basis of its
+many accompanying incorrect peptide
+identifications~\cite{spirin2011assigning, alves2015mass,
+granholm2013determining}. 
+%  {\em FIXME: I think you should avoid saying ``peptide
+%  identification'' and use the term ``detection'' instead. --Bill I
+%  agree with the need to avoid peptide ``identification'', but I don't
+%  really like the term peptide ``detection'' as it does not reflect
+%  the matching procedure, would you be okay with peptide ``inference''
+%  and protein ``inference''? --Matthew This is worth discussing with
+%  both Lukas and Mike. --Bill}
 This last characteristic can however also be a disadvantage, as many
 incorrect peptide identifications can overrule a minority of correct
 peptide identifications.  Unlike the product of PEPs, Fisher's method
@@ -232,7 +236,7 @@ unshuffled. This corresponded to the shared peptide rate in the
 original Swissprot yeast sample database.
 
 {\em FIXME: Change figure captions to use ``Entrapment FDR'' intead of
-  ``Obs. entrapment FDR.'' --Bill}
+  ``Obs. entrapment FDR.'' --Bill I agree --Lukas}
 
 Note that, in the comparison of the decoy FDR, {\em i.e.}, the FDR 
 estimates from the decoy model with reversed sequences, to the 
@@ -438,7 +442,7 @@ shared with at least two different protein groups.
 \caption{\label{fig:unique-accuracy}\textbf{Using only protein-unique
     peptides gives accurate estimates of the protein-level FDR.}
   (A) The figure plots the decoy FDR against observed entrapment FDR.
-  {\em FIXME: What peptide-level FDR was used? --Bill}
+  %{\em FIXME: What peptide-level FDR was used? --Bill}
   All four methods produce accurate FDR estimates. (B) A logarithmic 
   plot of the region $[0.001, 0.1]$ with the same axes as in (A).}
 \end{center}
@@ -514,21 +518,22 @@ the number of identified proteins at $1\%$ reported protein-level FDR
 identified the most protein groups with a $3\%$ margin over the second
 best method. Fisher's method identified much fewer proteins than the
 other three methods, due to incorrect peptides dragging down the $p$
-value of correct proteins. {\em FIXME: The previous sentence is an
-interesting observation. I think you should do some kind of follow-up
-analysis to verify this hypothesis. --Bill. I have data for the Kim
-set using a fully tryptic search. This significantly improved the
-performance of Fisher's method, most likely because less spurious
-peptides were present per protein. I don't know if that qualifies as a
-follow-up analysis, but it might be interesting to show
-anyway. --Matthew} Although the many proteoforms in the TrEMBL
-  database caused a large drop in the number of identifications for
-  all methods, the relative ranking of methods was consistent in both
-  sets of results. Overall, we concluded, in agreement with Savitski
-  {\em et al.}  \cite{savitski2015scalable}, that the best-scoring
-  peptide approach yielded the best overall performance.  We therefore
-  implemented this protein inference method in the latest Percolator
-  package.
+value of correct proteins.
+%{\em FIXME: The previous sentence is an
+%interesting observation. I think you should do some kind of follow-up
+%analysis to verify this hypothesis. --Bill. I have data for the Kim
+%set using a fully tryptic search. This significantly improved the
+%performance of Fisher's method, most likely because less spurious
+%peptides were present per protein. I don't know if that qualifies as a
+%follow-up analysis, but it might be interesting to show
+%anyway. --Matthew}
+ Although the many proteoforms in the TrEMBL database caused a large
+ drop in the number of identifications for all methods, the relative
+ ranking of methods was consistent in both sets of results. Overall,
+ we concluded, in agreement with Savitski {\em et al.} 
+ \cite{savitski2015scalable}, that the best-scoring peptide approach
+ yielded the best overall performance.  We therefore implemented this
+ protein inference method in the latest Percolator package.
 
 \begin{table}
   \begin{center}
@@ -559,17 +564,18 @@ million PSMs, in a matter of minutes on a commodity computer.
 
 The downsampling approach shows great stability even when only
 sampling a tiny fraction, as small as $0.1\%$, of the original set of
-PSMs.  The Kim data set might not be as representative for other
-types of studies that have greater heterogeneity, but it seems likely
-that the idea will hold as long as the selected subsets are not too
-small.  {\em FIXME: I think the relevant value is actually the number
-  of target PSMs available to the first round of SVM training. Maybe
-  we should report this value somewhere.  --Bill} In particular, our
-downsampling strategy, which involves some overlap between training
-and test sets, will only avoid problems of overfitting when the
-strategy is carried out on large datasets. {\em FIXME: I don't
-  understand why this is necessary?  Why can't you downsample first
-  and then do all the cross-validation the same as usual? --Bill}
+PSMs.  The Kim data set might not be as representative for other types
+of studies that have greater heterogeneity, but it seems likely that
+the idea will hold as long as the selected subsets are not too small.
+%{\em FIXME: I think the relevant value is actually the number of
+%target PSMs available to the first round of SVM training. Maybe we
+%should report this value somewhere. --Bill. I agree --Lukas} 
+In particular, our downsampling strategy, which involves some overlap
+between training and test sets, will only avoid problems of
+overfitting when the strategy is carried out on large datasets. 
+%{\em FIXME: I don't
+%  understand why this is necessary?  Why can't you downsample first
+%  and then do all the cross-validation the same as usual? --Bill This is just to be able to keep the current training procedure as is. We could have made asymmetric train and test parts of each cross validation set, or possibly other arrangements, but this just turned out to play better with the current version of the code. --Lukas}
 
 The most successful protein inference method turned out to be the one
 where proteins were grouped by their theoretical peptide sets and only
@@ -591,8 +597,9 @@ With regards to the discarded shared peptides, large-scale studies
 give us the luxury of deep coverage, therefore identifying many
 peptides that are unique to a protein. This mitigates the problem of
 ignoring shared peptides and makes the task of protein inference much
-simpler and intuitive.  {\em FIXME: But this raises the question, does
-  this method still work for smaller studies? --Bill}
+simpler and intuitive.  
+%{\em FIXME: But this raises the question, does this method still work
+%for smaller studies? --Bill. It works for smaller scale studies, but we do not provide evidence for that. Is that right Matthew? --Lukas}
 
 The protein grouping method employed here still suffers from the
 problem that an identification of a protein group leaves open the
