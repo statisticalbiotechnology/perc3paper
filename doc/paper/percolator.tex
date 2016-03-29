@@ -140,8 +140,8 @@ alternative that takes into account even more evidence is to compute
 the product of peptide-level PEPs. This procedure takes into account
 all peptides within a protein and provides some protection against
 one-hit wonders~\cite{cox2008maxquant}. The method also has the
-benefit that correctly detected proteins are not strongly affected by
-incorrectly detected peptide, because these typically contribute a
+benefit that correctly inferred proteins are not strongly affected by
+incorrectly inferred peptides, because these typically contribute a
 multiplicative term that is close to $1.0$. However, a concomitant
 drawback to using the product of PEPs is that it is not clear how to
 scale the resulting product to take into account protein length.
@@ -149,15 +149,11 @@ Also, it is not obvious {\em a priori} that the independence
 assumption implicit in taking the product applies in this case.  The
 latter concern also applies to Fisher's method, which is a classical
 technique for combining independent
-$p$~values~\cite{fisher1925statistical}.
-%{\em FIXME: I'm not sure this is the right article to cite for this.
-%--Matthew. This is apt. Particularly as you give more modern cites
-%below. --Lukas}
-Like the product of PEPs, Fisher's method takes into account all
-peptides of a protein, penalizing one-hit wonders on the basis of its
-many accompanying incorrect peptide
-identifications~\cite{spirin2011assigning, alves2015mass,
-granholm2013determining}. 
+$p$~values~\cite{fisher1925statistical}.  Like the product of PEPs,
+Fisher's method takes into account all peptides of a protein,
+penalizing one-hit wonders on the basis of its many accompanying
+incorrect peptide inferences~\cite{spirin2011assigning,
+  alves2015mass, granholm2013determining}.
 %  {\em FIXME: I think you should avoid saying ``peptide
 %  identification'' and use the term ``detection'' instead. --Bill I
 %  agree with the need to avoid peptide ``identification'', but I don't
@@ -166,8 +162,8 @@ granholm2013determining}.
 %  and protein ``inference''? --Matthew This is worth discussing with
 %  both Lukas and Mike. --Bill}
 This last characteristic can however also be a disadvantage, as many
-incorrect peptide identifications can overrule a minority of correct
-peptide identifications.  Unlike the product of PEPs, Fisher's method
+incorrect peptide inferences can overrule a minority of correct
+peptide inferences.  Unlike the product of PEPs, Fisher's method
 explicitly accounts for the number of $p$~values being combined and
 hence normalizes for protein length.
 
@@ -246,7 +242,7 @@ estimates from the decoy model with reversed sequences, to the
 entrapment FDR, {\em i.e.}, the fraction of entrapment proteins in the 
 set of identified target proteins, there is a discrepancy in the 
 underlying null hypothesis. The decoy FDR has the null hypothesis that 
-the protein's peptide identifications came from incorrect PSMs, 
+the protein's peptide inferences came from incorrect PSMs, 
 whereas the observed entrapment FDR employs the null hypothesis that 
 the protein is absent from the sample~\cite{the:how}. We mitigated 
 this problem by ensuring that the entrapment database was very large 
@@ -333,18 +329,19 @@ commodity computers.
 (A) & (B) & (C)
 \end{tabular}
 \caption{\label{fig:shared-accuracy}\textbf{Retaining shared peptides
-    leads to poor calibration of the decoy model for all protein
-    inference methods.} The figures plots reported $q$~values from the
-  decoy model, the decoy FDR, against the fraction of entrapment
-  proteins in the set of identified target proteins, the observed
-  entrapment FDR using a peptide-level FDR threshold of $10\%$ (A),
-  $5\%$ (B) and $1\%$ (C). Dotted lines correspond to $y=1.5x$ and
-  $y=0.67x$.  For a peptide-level FDR threshold of $10\%$, all four
-  methods produce anti-conservative FDR estimates, with Fisher's
-  method and product of PEPs achieving reasonable accuracy above $3\%$
-  decoy FDR. For the stricter thresholds of $5\%$ and $1\%$ the FDR
-  estimates of those two methods are anti-convervative for very low
-  FDRs, but quickly become conservative for higher FDRs.}
+    leads to poor calibration of the decoy model for all the tested
+    protein inference methods.} The figures plots reported $q$~values
+  from the decoy model, the decoy FDR, against the fraction of
+  entrapment proteins in the set of identified target proteins, the
+  observed entrapment FDR using a peptide-level FDR threshold of
+  $10\%$ (A), $5\%$ (B) and $1\%$ (C). Dotted lines correspond to
+  $y=1.5x$ and $y=0.67x$.  For a peptide-level FDR threshold of
+  $10\%$, all four methods produce anti-conservative FDR estimates,
+  with Fisher's method and product of PEPs achieving reasonable
+  accuracy above $3\%$ decoy FDR. For the stricter thresholds of $5\%$
+  and $1\%$ the FDR estimates of those two methods are
+  anti-convervative for very low FDRs, but quickly become conservative
+  for higher FDRs.}
 \end{center}
 \end{figure}
 
@@ -363,7 +360,7 @@ identified peptides, and also added proteins whose identified peptides
 formed a strict subset of this set to each
 group~\cite{nesvizhskii2005interpretation, serang2012review}.
 To reduce the effect of proteins breaking away from the
-group due to low-scoring, incorrect peptide identifications that are
+group due to low-scoring, incorrect peptide inferences that are
 unique to that protein, a peptide-level FDR threshold was set at
 $10\%$.
 
@@ -445,9 +442,13 @@ shared with at least two different protein groups.
 \caption{\label{fig:unique-accuracy}\textbf{Using only protein-unique
     peptides gives accurate estimates of the protein-level FDR.}
   (A) The figure plots the decoy FDR against observed entrapment FDR.
-  %{\em FIXME: What peptide-level FDR was used? --Bill}
+  %{\em FIXME: What peptide-level FDR was used? --Bill. I do not
+  %understand what could be reported here. A protein-FDR
+  %vs. peptide-FDR plot? Is that what you had in mind, Bill? --Lukas}
   All four methods produce accurate FDR estimates. (B) A logarithmic 
   plot of the region $[0.001, 0.1]$ with the same axes as in (A).}
+% FIXME: Make the B panel a true log-log, e.g. it should spell 10^-3
+% rather than -3. --Lukas
 \end{center}
 \end{figure}
 
@@ -464,42 +465,39 @@ together with the protein grouping approach from Nesvizhskii {\em et
   al.}, would be the most robust choice, regardless of the protein
 inference method.
 
+
+
 \subsection*{Selection of a protein inference strategy}
 
-\begin{figure}
-\begin{center}
-\begin{tabular}{ccc} 
-\includegraphics[width=0.3\linewidth]
-  {./img/shared-pept-performance-fdr10} &
-\includegraphics[width=0.3\linewidth]
-  {./img/shared-pept-performance-fdr5} &
-\includegraphics[width=0.3\linewidth]
-  {./img/shared-pept-performance-fdr1}\\
-(A) & (B) & (C)
-\end{tabular}
-\caption{\label{fig:shared-performance}\textbf{Comparison of protein
-    detection methods when retaining shared peptides.} We plotted the
-  number of sample proteins, which can be considered an estimate for
-  the number of true identifications, against the observed entrapment
-  FDR using a peptide-level FDR threshold of $10\%$ (A), $5\%$ (B) and
-  $1\%$ (C). Whereas Fisher's method, the product of peptide-level
-  PEPs and the two peptide rule initially pick up many sample
-  proteins, the best-scoring peptide approach immediately breaks
-  down. Stricter peptide-level thresholds increase the number of
-  protein detections at $1\%$ protein-level FDR for the $3$ other
-  methods.}
-\end{center}
-\end{figure}
-
-{\em FIXME: Need some text to accompany the figure with performance of
-  retaining shared peptides. An important point to make is that the
-  protein groups contain on average 3 to 4 proteins, opposed to an
-  average of 1.02 when only using unique peptides. --Matthew}
+%% \begin{figure}
+%% \begin{center}
+%% \begin{tabular}{ccc} 
+%% \includegraphics[width=0.3\linewidth]
+%%   {./img/shared-pept-performance-fdr10} &
+%% \includegraphics[width=0.3\linewidth]
+%%   {./img/shared-pept-performance-fdr5} &
+%% \includegraphics[width=0.3\linewidth]
+%%   {./img/shared-pept-performance-fdr1}\\
+%% (A) & (B) & (C)
+%% \end{tabular}
+%% \caption{\label{fig:shared-performance}\textbf{Comparison of protein
+%%     inference methods when retaining shared peptides.} We plotted the
+%%   number of sample proteins, which can be considered an estimate for
+%%   the number of true inferences, against the observed entrapment
+%%   FDR using a peptide-level FDR threshold of $10\%$ (A), $5\%$ (B) and
+%%   $1\%$ (C). Whereas Fisher's method, the product of peptide-level
+%%   PEPs and the two peptide rule initially pick up many sample
+%%   proteins, the best-scoring peptide approach immediately breaks
+%%   down. Stricter peptide-level thresholds increase the number of
+%%   protein detections at $1\%$ protein-level FDR for the $3$ other
+%%   methods.}
+%% \end{center}
+%% \end{figure}
 
 \begin{figure}
   \centering
   \includegraphics[width=0.45\linewidth]{./img/unique-pept-performance}
-  \caption{{\bf Comparison of protein detection methods.}  The figure
+  \caption{{\bf Comparison of protein inference methods.}  The figure
     plots the number of accepted protein groups against the observed
     entrapment FDR for (A) the hm\_yeast and (B,C) Kim data
     sets. Fisher's method, the product of peptide-level PEPs and the
@@ -508,7 +506,7 @@ inference method.
   \label{fig:power}
 \end{figure}
 
-Finally, we compared the number of proteins detected as a function of
+Finally, we compared the number of inferred proteins as a function of
 the observed entrapment FDR for the different inference methods.  For
 the hm\_yeast data set, the two-peptide rule was the only method
 clearly performing worse than the others (Figure~\ref{fig:power}A).
@@ -531,7 +529,7 @@ value of correct proteins.
 %follow-up analysis, but it might be interesting to show
 %anyway. --Matthew}
  Although the many proteoforms in the TrEMBL database caused a large
- drop in the number of identifications for all methods, the relative
+ drop in the number of inferences for all methods, the relative
  ranking of methods was consistent in both sets of results. Overall,
  we concluded, in agreement with Savitski {\em et al.} 
  \cite{savitski2015scalable}, that the best-scoring peptide approach
@@ -553,7 +551,7 @@ value of correct proteins.
   \end{center}
 \caption{\label{tab:pandey-stats}\textbf{Using the best-scoring
     peptide as a protein's representative identified the most protein
-    groups.} We examined the number of protein identifications for the
+    groups.} We examined the number of protein inferences for the
   four protein inference method using only peptides unique to one of
   the protein groups formed by the approach from Nesvizhskii {\em et
     al.}. }
@@ -566,34 +564,40 @@ protein-level FDRs on a human proteome scale study, in this case $73$
 million PSMs, in a matter of minutes on a commodity computer.
 
 The downsampling approach shows great stability even when only
-sampling a tiny fraction, as small as $0.1\%$, of the original set of
-PSMs.  The Kim data set might not be as representative for other types
-of studies that have greater heterogeneity, but it seems likely that
-the idea will hold as long as the selected subsets are not too small.
+sampling a tiny fraction, as small as $100,000$ PSMs, {\em i.e.}
+$0.1\%$ of the original set of 73 million PSMs.  The Kim data set
+might not be as representative for other types of studies that have
+greater heterogeneity, but it seems likely that the idea will hold as
+long as the selected subsets are not too small.
 %{\em FIXME: I think the relevant value is actually the number of
 %target PSMs available to the first round of SVM training. Maybe we
-%should report this value somewhere. --Bill. I agree --Lukas} 
+%should report this value somewhere. --Bill. Solved?  --Lukas and
+%Matthew}
 In particular, our downsampling strategy, which involves some overlap
 between training and test sets, will only avoid problems of
 overfitting when the strategy is carried out on large datasets. 
-%{\em FIXME: I don't
-%  understand why this is necessary?  Why can't you downsample first
-%  and then do all the cross-validation the same as usual? --Bill This is just to be able to keep the current training procedure as is. We could have made asymmetric train and test parts of each cross validation set, or possibly other arrangements, but this just turned out to play better with the current version of the code. --Lukas}
+%{\em FIXME: I don't understand why this is necessary?  Why can't you
+%  downsample first and then do all the cross-validation the same as
+%  usual? --Bill This is just to be able to keep the current training
+%  procedure as is. We could have made asymmetric train and test parts
+%  of each cross validation set, or possibly other arrangements, but
+%  this just turned out to play better with the current version of the
+%  code. --Lukas}
 
 The most successful protein inference method turned out to be the one
 where proteins were grouped by their theoretical peptide sets and only
 the best-scoring peptide was considered. In this approach, the score
 assigned to a protein essentially ignores the majority of the PSMs,
 something that may feel quite unsatisfying. On the other hand,
-including evidence from other, lower scoring peptide identifications
+including evidence from other, lower scoring peptide inferences
 is difficult because it often involves lumping incorrect peptide
-identifications into correct protein identifications.  This problem
+inferences into correct protein inferences.  This problem
 can clearly be seen in the poor performance of Fisher's method for
 combining $p$ values on the Kim data set. Setting peptide-level
 thresholds can actually bring Fisher's method up to par with the
 best-scoring peptide approach (data not shown). However, this
 modification does not produce significantly more protein
-identifications, while introducing an extra parameter that needs to be
+inferences, while introducing an extra parameter that needs to be
 set correctly.
 
 With regards to the discarded shared peptides, large-scale studies
@@ -602,10 +606,12 @@ peptides that are unique to a protein. This mitigates the problem of
 ignoring shared peptides and makes the task of protein inference much
 simpler and intuitive.  
 %{\em FIXME: But this raises the question, does this method still work
-%for smaller studies? --Bill. It works for smaller scale studies, but we do not provide evidence for that. Is that right Matthew? --Lukas}
+%for smaller studies? --Bill. Include a performance plot for
+%downsampling, e.g. 12 subsampling steps of a factor 2 of the kim
+%set. --Lukas}
 
 The protein grouping method employed here still suffers from the
-problem that an identification of a protein group leaves open the
+problem that an inference of a protein group leaves open the
 question which proteins in the group are actually correct. Here, we
 interpreted it using the null hypothesis that all proteins in the
 group are incorrect, {\em i.e.}, an identified protein group means
