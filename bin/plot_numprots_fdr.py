@@ -12,7 +12,8 @@ import distinct_colours as dc
 
 def main():
   #percTabBase = "/media/storage/mergespec/data/Pandey/percolator_tdc/tab_subset_500k/Pandey.percolator"
-  percTabBase = "/media/storage/mergespec/data/Pandey/percolator_tdc_uniprot/tab_uppmax/Pandey.percolator"
+  #percTabBase = "/media/storage/mergespec/data/Pandey/percolator_tdc_uniprot/tab_uppmax/Pandey.percolator"
+  percTabBase = "/media/hdd/matthew/mergespec/data/Linfeng/percolator_tdc/tab/Linfeng.percolator"
   
   force = False
   
@@ -50,20 +51,29 @@ def main():
     qvals, numpos = getQvalues(targetOutFN)
     plotQvalues(qvals, numpos, options, colors[i])
   
-  labelFontSize = 30
-  if "uniprot" in percTabBase:
-    maxY = 7000
-  else:
-    maxY = 14000
   
+  if "Pandey" in percTabBase:
+    if "uniprot" in percTabBase:
+      maxY = 7000
+    else:
+      maxY = 14000
+    labelFontSize = 30
+    legendFontSize = 24
+    axisFontSize = 20
+  elif "Linfeng" in percTabBase:
+    maxY = 3500
+    labelFontSize = 24
+    legendFontSize = 20
+    axisFontSize = 16
+    
   plt.figure(1)
   plt.plot([0.01, 0.01], [0, maxY], 'k', linestyle = 'dotted')
   plt.xlim([0, 0.05])
   plt.ylim([0, maxY])
   plt.xlabel("Decoy FDR", fontsize = labelFontSize)
   plt.ylabel("Number of protein groups", fontsize = labelFontSize)
-  plt.legend(loc = 'lower right', prop={'size':24})
-  setAxisFontSize(20)
+  plt.legend(loc = 'lower right', prop={'size':legendFontSize})
+  setAxisFontSize(axisFontSize)
   plt.tight_layout()
   
   plt.show()
