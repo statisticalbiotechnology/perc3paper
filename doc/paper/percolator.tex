@@ -2,7 +2,7 @@
 \usepackage[a4paper,margin=1in]{geometry}
 
 \title{Fast and accurate protein false discovery rates on large-scale
-proteomics datasets with Percolator 3.0}
+proteomics data sets with Percolator 3.0}
 
 % FIXME: I changed the title, and removed the reference to the human
 % proteome, as I hope the software is more general than that. --Lukas
@@ -117,7 +117,7 @@ accuracy estimates. One of the major obstacles was the question of how
 to deal with shared peptides and protein grouping. An implementation 
 of Fido~\cite{serang2010efficient}, which has been part of the 
 Percolator package since 2012, addresses these two issues but is too 
-computationally expensive to apply to large-scale datasets. We 
+computationally expensive to apply to large-scale data sets. We 
 therefore compared four straightforward and scalable protein inference 
 methods: using the best-scoring peptide, the two-peptide 
 rule~\cite{carr2004need, gupta2009false}, the product of 
@@ -125,9 +125,9 @@ peptide-level posterior error probabilities (PEPs), and Fisher's
 method for combining independent $p$~values.
 
 Although each of these methods is efficient to compute, they each
-offer specific pros and cons.  Savitski {\em et
+offer specific pros and cons  Savitski {\em et
   al.}~\cite{savitski2015scalable} showed that, on large-scale
-datasets, taking the best-scoring peptide as the representative of a
+data sets, taking the best-scoring peptide as the representative of a
 protein was superior to incorporating information from lower scoring
 peptides. However, this approach is unsatisfying because the method
 discards all information but the best-scoring PSMs for each protein.
@@ -135,7 +135,7 @@ Perhaps the simplest way to combine evidence at the peptide level is
 widely used the two-peptide rule.  This approach requires evidence for
 a second peptide to support a protein inference, thereby preventing
 so-called ``one-hit wonders'', {\em i.e.}, cases where a single,
-potentially spurious PSMs yields a spurious protein detection.  An
+potentially spurious PSMs yields a spurious protein detection. An
 alternative that takes into account even more evidence is to compute
 the product of peptide-level PEPs. This procedure takes into account
 all peptides within a protein and provides some protection against
@@ -149,7 +149,7 @@ Also, it is not obvious {\em a priori} that the independence
 assumption implicit in taking the product applies in this case.  The
 latter concern also applies to Fisher's method, which is a classical
 technique for combining independent
-$p$~values~\cite{fisher1925statistical}.  Like the product of PEPs,
+$p$~values~\cite{fisher1925statistical}. Like the product of PEPs,
 Fisher's method takes into account all peptides of a protein,
 penalizing one-hit wonders on the basis of its many accompanying
 incorrect peptide inferences~\cite{spirin2011assigning,
@@ -160,7 +160,8 @@ incorrect peptide inferences~\cite{spirin2011assigning,
 %  really like the term peptide ``detection'' as it does not reflect
 %  the matching procedure, would you be okay with peptide ``inference''
 %  and protein ``inference''? --Matthew This is worth discussing with
-%  both Lukas and Mike. --Bill}
+%  both Lukas and Mike. --Bill. We changed all instances to
+%  inference for consistency. --Matthew}
 This last characteristic can however also be a disadvantage, as many
 incorrect peptide inferences can overrule a minority of correct
 peptide inferences.  Unlike the product of PEPs, Fisher's method
@@ -193,7 +194,7 @@ the default parameters, through the Crux 2.0 package
 interface~\cite{mcilwain2014}.
 
 For the Kim data set, the data was searched against the human
-Swissprot and Swissprot+TrEMBL databases (accessed: 2015 Nov 12)
+Swiss-Prot and Swiss-Prot+TrEMBL databases (accessed: 2015 Nov 12)
 concatenated with a database of common contaminants (source:
 \url{http://maxquant.org/contaminants.zip}, accessed: 2015 Apr 17)
 using the Tide search engine, again through the Crux interface. We
@@ -224,7 +225,7 @@ score was computed as the average of the scores from these three SVMs.
 We assessed the accuracy and stability of FDR estimates on the
 hm\_yeast data set by using a {\em sample} and {\em entrapment}
 database, as previously described~\cite{granholm2013determining}. The
-yeast Swissprot database (\url{http://www.uniprot.org/}, accessed:
+yeast Swiss-Prot database (\url{http://www.uniprot.org/}, accessed:
 2016 Mar 15) was taken as the sample database, and the entrapment
 database was created by shuffling the peptide sequences of the sample
 database. This process was repeated nine times, making the target
@@ -232,22 +233,22 @@ database $10$ times the size of the original sample database.
 Furthermore, we artificially added shared peptides between the sample
 and entrapment database by keeping $4\%$ of the sample peptides
 unshuffled. This corresponded to the shared peptide rate in the
-original Swissprot yeast sample database.
+original Swiss-Prot yeast sample database.
 
 {\em FIXME: Change figure captions to use ``Entrapment FDR'' intead of
   ``Obs. entrapment FDR.'' --Bill I agree --Lukas}
 
-Note that, in the comparison of the decoy FDR, {\em i.e.}, the FDR 
-estimates from the decoy model with reversed sequences, to the 
-entrapment FDR, {\em i.e.}, the fraction of entrapment proteins in the 
-set of identified target proteins, there is a discrepancy in the 
-underlying null hypothesis. The decoy FDR has the null hypothesis that 
-the protein's peptide inferences came from incorrect PSMs, 
-whereas the observed entrapment FDR employs the null hypothesis that 
-the protein is absent from the sample~\cite{the:how}. We mitigated 
-this problem by ensuring that the entrapment database was very large 
-compared to the sample database, thereby reducing the frequency of 
-inadvertently identified absent sample proteins.
+Note that, in the comparison of the decoy FDR, {\em i.e.}, the FDR
+estimates from the decoy model with reversed sequences, to the
+entrapment FDR, {\em i.e.}, the fraction of entrapment proteins in the
+set of inferred target proteins, there is a discrepancy in the
+underlying null hypothesis. The decoy FDR has the null hypothesis that
+the protein's peptide inferences came from incorrect PSMs, whereas the
+observed entrapment FDR employs the null hypothesis that the protein
+is absent from the sample~\cite{the:how}. We mitigated this problem by
+ensuring that the entrapment database was very large compared to the
+sample database, thereby reducing the frequency of inadvertently
+inferred absent sample proteins.
 
 The Kim data set was used as an indication of the performance on
 large-scale data. We calculated FDR estimates
@@ -275,8 +276,8 @@ mentioned above for the Kim data set.
   evaluated subset sizes of $100\,000, 500\,000, 1\,000\,000$ and
   $5\,000\,000$ PSMs to train the SVMs, repeating this for $10$
   randomized sets, and scored all $73$ million PSMs using the
-  resulting support vectors. The figure plots the ratio of significant PSMs
-  and peptides at a $q$ value threshold of $0.01$ as the fraction
+  resulting support vectors. The figure plots the ratio of significant
+  PSMs and peptides at a $q$ value threshold of $0.01$ as the fraction
   compared to using the full training set of $73$ million PSMs. The
   number of significant PSMs and unique peptides does not drop
   significantly, even for subsets of $100\,000$ PSMs.}
@@ -285,14 +286,16 @@ mentioned above for the Kim data set.
 
 We used the Kim data set to evaluate the robustness of Percolator's
 SVM classifier to reductions in the size of the training set.  The
-Tide searches of the complete Kim data set against the human Swissprot
+Tide searches of the complete Kim data set against the human
+Swiss-Prot
 database resulted in $73$ million target and decoy PSMs.
 Post-processing the full data set with Percolator resulted in
 $7\,928\,454$ significant PSMs and $298\,301$ unique target peptides
 at a $q$~value threshold of $0.01$.  To characterize the performance
 of the SVM learning procedure when training on subsets of the PSMs, we
 randomly selected subsets of $100\,000, 500\,000, 1\,000\,000$ and
-$5\,000\,000$ PSMs from the Kim data set.  We trained using these subsets
+$5\,000\,000$ PSMs from the Kim data set.  We trained using these
+subsets
 and applied the trained classifier to the full data set. Preliminary
 results showed that including target and decoy PSMs belonging to the
 same spectrum together during the selection of random subsets gave a
@@ -304,8 +307,8 @@ peptides with $q$ value below $0.01$.
 
 This experiment showed that using subsets as small as $100\,000$ PSMs
 ($0.14\%$) for SVM training did not significantly reduce the number of
-identified peptides and PSMs (Figure \ref{fig:subset}). The standard
-deviation of identified PSMs across the randomized runs for a fixed
+inferred peptides and PSMs (Figure \ref{fig:subset}). The standard
+deviation of inferred PSMs across the randomized runs for a fixed
 subset size did seem to increase slightly when taking increasingly
 smaller subsets, but this effect was limited. By using a subset of
 $500\,000$ PSMs to train the SVM, Percolator's runtime was reduced
@@ -332,7 +335,7 @@ commodity computers.
     leads to poor calibration of the decoy model for all the tested
     protein inference methods.} The figures plots reported $q$~values
   from the decoy model, the decoy FDR, against the fraction of
-  entrapment proteins in the set of identified target proteins, the
+  entrapment proteins in the set of inferred target proteins, the
   observed entrapment FDR using a peptide-level FDR threshold of
   $10\%$ (A), $5\%$ (B) and $1\%$ (C). Dotted lines correspond to
   $y=1.5x$ and $y=0.67x$.  For a peptide-level FDR threshold of
@@ -352,7 +355,7 @@ hm\_yeast set.  The assessment employed our previously described
 sample/entrapment strategy \cite{granholm2013determining}, which
 involves comparing the $q$~values reported based on the decoy model,
 the decoy FDR, to the fraction of entrapment proteins in the set of
-identified target proteins, which we call the observed entrapment FDR.
+inferred target proteins, which we call the observed entrapment FDR.
 
 First, we compared the four protein inference methods while retaining
 shared peptides. We grouped proteins that had the same set of
@@ -385,12 +388,12 @@ anti-convervative, estimates in that region.
 
 \begin{table}
 \caption{\label{tab:duplicate-proteins}\textbf{Protein grouping
-    increases the number of identifiable protein entities.}}
+    increases the number of inferable protein entities.}}
 \scriptsize
 \begin{center}
 \begin{tabular}{lrrr}
 \hline
-& Swissprot & Swissprot+TrEMBL & Ensembl\\
+& Swiss-Prot & Swiss-Prot+TrEMBL & Ensembl\\
 \hline
 Protein sequences & 20\,201 & 69\,714 & 101\,933\\
 Peptide sequences & 586\,424 & 664\,801 & 672\,519\\
@@ -421,22 +424,23 @@ that are unique to a protein group, rather than to a single protein.
 We applied this approach to several protein databases and showed
 empirically that including the protein grouping step increases the
 number of protein entities, {\em i.e.}, single proteins or protein
-groups, with a peptide uniquely identifying it.  The experiment
+groups, with a peptide uniquely inferring it. The experiment
 involved performing a fully tryptic digestion, with no misssed
-cleavages, of three human protein databases---Swissprot,
-Swissprot+TrEMBL, and Ensembl---considering peptides with lengthsk of
+cleavages, of three human protein databases---Swiss-Prot,
+Swiss-Prot+TrEMBL, and Ensembl---considering peptides with lengthsk of
 6--50 amino acids. TrEMBL and Ensembl contain many proteoforms and
 therefore benefit significantly from this particular protein grouping
-approach in terms of number of identifiable protein entities (Table
+approach in terms of number of inferable protein entities (Table
 \ref{tab:duplicate-proteins}). Note that, unfortunately, some protein
-groups will remain unidentifiable, because all their peptides are
+groups will remain uninferable, because all their peptides are
 shared with at least two different protein groups.
 
 \begin{figure}
 \begin{center}
 \begin{tabular}{cc} 
 \includegraphics[width=0.45\linewidth]{./img/unique-pept-accuracy} &
-\includegraphics[width=0.45\linewidth]{./img/unique-pept-accuracy-log}\\
+\includegraphics[width=0.45\linewidth]{./img/unique-pept-accuracy-log}
+\\
 (A) & (B)
 \end{tabular}
 \caption{\label{fig:unique-accuracy}\textbf{Using only protein-unique
@@ -447,8 +451,6 @@ shared with at least two different protein groups.
   %vs. peptide-FDR plot? Is that what you had in mind, Bill? --Lukas}
   All four methods produce accurate FDR estimates. (B) A logarithmic 
   plot of the region $[0.001, 0.1]$ with the same axes as in (A).}
-% FIXME: Make the B panel a true log-log, e.g. it should spell 10^-3
-% rather than -3. --Lukas
 \end{center}
 \end{figure}
 
@@ -466,58 +468,67 @@ together with the protein grouping approach from Nesvizhskii {\em et
 inference method.
 
 
-
 \subsection*{Selection of a protein inference strategy}
 
-%% \begin{figure}
-%% \begin{center}
-%% \begin{tabular}{ccc} 
-%% \includegraphics[width=0.3\linewidth]
-%%   {./img/shared-pept-performance-fdr10} &
-%% \includegraphics[width=0.3\linewidth]
-%%   {./img/shared-pept-performance-fdr5} &
-%% \includegraphics[width=0.3\linewidth]
-%%   {./img/shared-pept-performance-fdr1}\\
-%% (A) & (B) & (C)
-%% \end{tabular}
-%% \caption{\label{fig:shared-performance}\textbf{Comparison of protein
-%%     inference methods when retaining shared peptides.} We plotted the
-%%   number of sample proteins, which can be considered an estimate for
-%%   the number of true inferences, against the observed entrapment
-%%   FDR using a peptide-level FDR threshold of $10\%$ (A), $5\%$ (B) and
-%%   $1\%$ (C). Whereas Fisher's method, the product of peptide-level
-%%   PEPs and the two peptide rule initially pick up many sample
-%%   proteins, the best-scoring peptide approach immediately breaks
-%%   down. Stricter peptide-level thresholds increase the number of
-%%   protein detections at $1\%$ protein-level FDR for the $3$ other
-%%   methods.}
-%% \end{center}
-%% \end{figure}
+% \begin{figure}
+% \begin{center}
+% \begin{tabular}{ccc} 
+% \includegraphics[width=0.3\linewidth]
+%   {./img/shared-pept-performance-fdr10} &
+% \includegraphics[width=0.3\linewidth]
+%   {./img/shared-pept-performance-fdr5} &
+% \includegraphics[width=0.3\linewidth]
+%   {./img/shared-pept-performance-fdr1}\\
+% (A) & (B) & (C)
+% \end{tabular}
+% \caption{\label{fig:shared-performance}\textbf{Comparison ofprotein
+% inference methods when retaining shared peptides.} We plotted the
+% number of sample proteins, which can be considered an estimate for the
+% number of true inferences, against the observed entrapment FDR using a
+% peptide-level FDR threshold of $10\%$ (A), $5\%$ (B) and $1\%$ (C).
+% Whereas Fisher's method, the product of peptide-level PEPs and the two
+% peptide rule initially pick up many sample proteins, the best-scoring
+% peptide approach immediately breaks down. Stricter peptide-level
+% thresholds increase the number of protein detections at $1\%$
+% protein-level FDR for the $3$ other methods.}
+% \end{center}
+% \end{figure}
 
 \begin{figure}
-  \centering
-  \includegraphics[width=0.45\linewidth]{./img/unique-pept-performance}
-  \caption{{\bf Comparison of protein inference methods.}  The figure
-    plots the number of accepted protein groups against the observed
-    entrapment FDR for (A) the hm\_yeast and (B,C) Kim data
-    sets. Fisher's method, the product of peptide-level PEPs and the
-    best scoring peptide approach all perform about equally, while the
-    two peptide rule is much less sensitive.}
+\centering
+\begin{tabular}{ccc}
+\includegraphics[width=0.3\linewidth]
+{./img/unique-pept-performance} &
+\includegraphics[width=0.3\linewidth]
+{./img/kim-swissprot-performance} &
+\includegraphics[width=0.3\linewidth]
+{./img/kim-uniprot-performance}\\
+(A) & (B) & (C)
+\end{tabular}
+  \caption{{\bf Comparison of protein inference methods.} The figure
+plots the number of accepted protein groups against the observed
+entrapment FDR for the hm\_yeast (A) and against the decoy FDR for the
+Kim data sets searched using the Swiss-Prot (B) and the
+Swiss-Prot+TrEMBL database (C). Fisher's method, the product of
+peptide-level PEPs and the best-scoring peptide approach all perform
+about equally on the hm\_yeast set, while the two peptide rule is much
+less sensitive. For the Kim data set, the best-scoring peptide
+approach inferred the most protein groups for both protein databases.}
   \label{fig:power}
 \end{figure}
 
 Finally, we compared the number of inferred proteins as a function of
 the observed entrapment FDR for the different inference methods.  For
 the hm\_yeast data set, the two-peptide rule was the only method
-clearly performing worse than the others (Figure~\ref{fig:power}A).
-We then repeated the assessment on the much larger Kim data set, using
-two different databases (Swissprot and Swissprot+TREMBL).  Even for
+clearly performing worse than the others (Figure~\ref{fig:power}A). We
+then repeated the assessment on the much larger Kim data set, using
+two different databases (Swiss-Prot and Swiss-Prot+TrEMBL).  Even for
 such large-scale data, all four protein inference methods took less
 than a minute of processing time due to their simplicity. We looked at
-the number of identified proteins at $1\%$ reported protein-level FDR
-(Table~\ref{tab:pandey-stats}).  The best-scoring peptide approach
-identified the most protein groups with a $3\%$ margin over the second
-best method. Fisher's method identified much fewer proteins than the
+the number of inferred protein groups at $1\%$ reported protein-level
+FDR (Figure~\ref{fig:power}B,C).  The best-scoring peptide approach
+inferred the most protein groups with a $3\%$ margin over the second
+best method. Fisher's method inferred much fewer proteins than the
 other three methods, due to incorrect peptides dragging down the $p$
 value of correct proteins.
 %{\em FIXME: The previous sentence is an
@@ -525,8 +536,8 @@ value of correct proteins.
 %analysis to verify this hypothesis. --Bill. I have data for the Kim
 %set using a fully tryptic search. This significantly improved the
 %performance of Fisher's method, most likely because less spurious
-%peptides were present per protein. I don't know if that qualifies as a
-%follow-up analysis, but it might be interesting to show
+%peptides were present per protein. I don't know if that qualifies as
+%a follow-up analysis, but it might be interesting to show
 %anyway. --Matthew}
  Although the many proteoforms in the TrEMBL database caused a large
  drop in the number of inferences for all methods, the relative
@@ -536,26 +547,26 @@ value of correct proteins.
  yielded the best overall performance.  We therefore implemented this
  protein inference method in the latest Percolator package.
 
-\begin{table}
-  \begin{center}
-    \begin{tabular}{lrr}
-    \hline
-    partial digestion & Swissprot & Swissprot+TrEMBL\\
-    \hline
-    Best-scoring peptide & 12\,370 & 5\,909\\
-    Product peptide-level PEPs & 11\,968 & 5\,626\\
-    Two peptide rule & 11\,409 & 4\,231\\
-    Fisher's method & 8\,964 & 3\,717\\
-    \hline
-    \end{tabular}
-  \end{center}
-\caption{\label{tab:pandey-stats}\textbf{Using the best-scoring
-    peptide as a protein's representative identified the most protein
-    groups.} We examined the number of protein inferences for the
-  four protein inference method using only peptides unique to one of
-  the protein groups formed by the approach from Nesvizhskii {\em et
-    al.}. }
-\end{table}
+% \begin{table}
+%   \begin{center}
+%     \begin{tabular}{lrr}
+%     \hline
+%     partial digestion & Swiss-Prot & Swiss-Prot+TrEMBL\\
+%     \hline
+%     Best-scoring peptide & 12\,370 & 5\,909\\
+%     Product peptide-level PEPs & 11\,968 & 5\,626\\
+%     Two peptide rule & 11\,409 & 4\,231\\
+%     Fisher's method & 8\,964 & 3\,717\\
+%     \hline
+%     \end{tabular}
+%   \end{center}
+% \caption{\label{tab:pandey-stats}\textbf{Using the best-scoring
+%   peptide as a protein's representative identified the most protein
+%     groups.} We examined the number of protein inferences for the
+%   four protein inference method using only peptides unique to one of
+%   the protein groups formed by the approach from Nesvizhskii {\em et
+%     al.}. }
+% \end{table}
 
 \section*{Discussion}
 
@@ -575,7 +586,7 @@ long as the selected subsets are not too small.
 %Matthew}
 In particular, our downsampling strategy, which involves some overlap
 between training and test sets, will only avoid problems of
-overfitting when the strategy is carried out on large datasets. 
+overfitting when the strategy is carried out on large data sets. 
 %{\em FIXME: I don't understand why this is necessary?  Why can't you
 %  downsample first and then do all the cross-validation the same as
 %  usual? --Bill This is just to be able to keep the current training
@@ -622,7 +633,7 @@ the full set of theoretical peptides, the groups produced by our
 method are much smaller.  Consequently, ambiguity about which specific
 proteins are present is much rarer.  Furthermore, if genes, rather
 than proteoforms, are the entities of interest, then using databases
-with few proteoforms such as Swissprot should do the job.
+with few proteoforms such as Swiss-Prot should do the job.
 
 The construction of the entrapment database in this study should be
 considered as a rather crude approximation of true experimental
@@ -635,10 +646,10 @@ not attempt to model homology.  In our approach, the shared peptides
 are randomly distributed over all proteins, whereas in practice we can
 expect some portion of proteins to share multiple peptides and many
 proteins to have no shared peptides at all. The rate of shared
-peptides---$4\%$, modelled after the Swissprot yeast database---is
-also a good approximation of the shared peptide rate of the Swissprot
+peptides---$4\%$, modelled after the Swiss-Prot yeast database---is
+also a good approximation of the shared peptide rate of the Swiss-Prot
 human database. However, the shared peptide rate in the
-Swissprot+TrEMBL database is much higher, with over $60\%$ of the
+Swiss-Prot+TrEMBL database is much higher, with over $60\%$ of the
 peptides being shared by at least two proteins.  Modeling this level
 of redundancy could result in significantly different outcomes.
 
@@ -655,11 +666,11 @@ number of runs without running this risk.
 
 \section*{Acknowledgements}
 
-The computations were performed on resources provided by the Swedish
-National Infrastructure for Computing (SNIC) at Uppsala
-Multidisciplinary Center for Advanced Computational Science
-(UPPMAX). This work was supported by National Institutes of Health
-award P41~GM103533.
+Part of the computations were performed on resources provided by the
+Swedish National Infrastructure for Computing (SNIC) at Uppsala
+Multidisciplinary Center for Advanced Computational Science (UPPMAX).
+This work was supported by National Institutes of Health award
+P41~GM103533.
 
 \bibliographystyle{plain}
 \bibliography{percolator}
