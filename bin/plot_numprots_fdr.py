@@ -44,16 +44,10 @@ def main():
   for i, options in enumerate(optionsArray):
     targetOutFN, decoyOutFN = prot.getOutputFN(percTabBase, options)
     
-    totalDbProteins = 6721*10
-    
-    fileName = targetOutFN
-    print fileName
-    
-    if not os.path.isfile(fileName) or force:
+    if not os.path.isfile(targetOutFN) or force:
       prot.writeProteinFdrs(percTabBase, options)
     
-    qvals, numpos = getQvalues(fileName, totalDbProteins)
-    numSignificant = sum(1 if qval < 0.01 else 0 for qval in qvals)
+    qvals, numpos = getQvalues(targetOutFN)
     plotQvalues(qvals, numpos, options, colors[i])
   
   labelFontSize = 30
@@ -80,7 +74,7 @@ def setAxisFontSize(size):
   for tick in plt.gca().yaxis.get_major_ticks():
     tick.label.set_fontsize(size)
     
-def getQvalues(fileName, totalProteins):
+def getQvalues(fileName):
   csv.field_size_limit(sys.maxsize)
   file = open(fileName, 'rb') # The input is the protein output file (.tab) from Percolator (-l)
   reader = csv.reader(file, delimiter='\t')
