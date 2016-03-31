@@ -434,9 +434,12 @@ shared with at least two different protein groups.
     For Fisher's method and the multPEP method, you have to set some
     threshold on the peptid-level FDR.  I just think that the
     threshold should be reported in the figure caption. I was not
-    suggesting changing the plot.  --Bill} All four methods produce
-  accurate FDR estimates. (B) A logarithmic plot of the region
-  $[0.001, 0.1]$ with the same axes as in (A).}
+    suggesting changing the plot.  --Bill. No, Matthew never used any
+    peptide-level treshold. The methods all produce one consistent
+    list of proteins each. Lists that do not change when we adjust the
+    FDR treshold. --Lukas}  All four methods produce accurate FDR
+  estimates. (B) A logarithmic plot of the region $[0.001, 0.1]$ with
+  the same axes as in (A).}
 \end{center}
 \end{figure}
 
@@ -581,7 +584,10 @@ long as the selected subsets are not too small.  {\em FIXME: I think
   to the first round of SVM training. Maybe we should report this
   value somewhere. --Bill. Solved?  --Lukas and Matthew I don't
   understand in what sense this is ``solved.'' Is the number reported
-  somewhere, and I am not seeing it? --Bill } In particular, our
+  somewhere, and I am not seeing it? --Bill. We spelled out the number
+  of PSMs in the text above. Did you mean something different? What
+  did you mean with first round of training, is it the number of PSMs
+  in the initial search direction? --Lukas} In particular, our
 downsampling strategy, which involves some overlap between training
 and test sets, will only avoid problems of overfitting when the
 strategy is carried out on large data sets.  {\em FIXME: I don't
@@ -593,7 +599,11 @@ strategy is carried out on large data sets.  {\em FIXME: I don't
   out to play better with the current version of the code. --Lukas OK,
   but then it seems like you should explain this point and say that
   it's going to be fixed. ``The current strategy was adopted for
-  simplicity of implementation, but ...''}
+  simplicity of implementation, but ...'' -- Bill. Maybe that I do not
+  understanbd with what yuou mean with ``the same as usual''. I do not
+  think there is a default startegy for how to downsample in this
+  case. One other option would be to downsample each cross validation
+  bin separately. Is that what you had in mind? --Lukas}
 
 The most successful protein inference method turned out to be the one
 where proteins were grouped by their theoretical peptide sets and only
