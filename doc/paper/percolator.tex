@@ -461,9 +461,12 @@ shared with at least two different protein groups.
     suggesting changing the plot.  --Bill. Matthew never used any
     peptide-level threshold. The methods all produce one consistent
     list of proteins each; lists that do not change when we adjust the
-    FDR threshold. --Lukas}  All four methods produce accurate FDR
+    FDR threshold. --Lukas} All four methods produce accurate FDR
   estimates. (B) A logarithmic plot of the region $[0.001, 0.1]$ with
-  the same axes as in (A).}
+  the same axes as in (A). Please note that in contrast to the
+  procedure used in Figure \ref{fig:shared-accuracy}, we did not apply
+  any peptide level FDR as all protein grouping was made before data
+  was observed. }
 \end{center}
 \end{figure}
 
@@ -618,7 +621,8 @@ sampling a tiny fraction, as small as $100,000$ PSMs, {\em i.e.}
 $0.14\%$ of the original set of $73$ million PSMs.  The Kim data set
 might not be as representative for other types of studies that have
 greater heterogeneity, but it seems likely that the idea will hold as
-long as the selected subsets are not too small.  {\em FIXME: I think
+long as the selected subsets are not too small and contain a
+sufficient number of positive training examples.  {\em FIXME: I think
   the relevant value is actually the number of target PSMs available
   to the first round of SVM training. Maybe we should report this
   value somewhere. --Bill. Solved?  --Lukas and Matthew I don't
@@ -629,7 +633,12 @@ long as the selected subsets are not too small.  {\em FIXME: I think
   in the initial search direction? --Lukas} In particular, our
 downsampling strategy, which involves some overlap between training
 and test sets, will only avoid problems of overfitting when the
-strategy is carried out on large data sets.  {\em FIXME: I don't
+strategy is carried out on large data sets. This strategy was adopted
+for simplicity of implementation. In a future version of the code, we
+will likely implement a scheme where we downsample each cross
+validation bin individually.
+
+{\em FIXME: I don't
   understand why this is necessary.  Why can't you downsample first
   and then do all the cross-validation the same as usual? --Bill This
   is just to be able to keep the current training procedure as is. We
