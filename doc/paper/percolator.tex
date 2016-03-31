@@ -370,8 +370,9 @@ shared peptides. We grouped proteins that had the same set of
 identified peptides, and also added proteins whose identified peptides
 formed a strict subset of this set to each
 group~\cite{nesvizhskii2005interpretation, serang2012review}.  We
-performed the experiment three times, using peptide-level FDR
-thresholds of 10\%, 5\%, and 1\%.
+performed the experiment three times, varying the peptide-level FDR
+threshold (10\%, 5\%, and 1\%) used during the protein grouping
+procedure
 
 This experiment showed that the decoy models based on the reversed
 protein database systematically produce liberal (anti-conservative)
@@ -426,6 +427,10 @@ experimentally discovered peptides, and two proteins $A$ and $B$ are
 merged into a group if protein $A$'s peptides are a superset of
 protein $B$'s peptides or vice versa.  We then retain the peptides
 that are unique to a protein group, rather than to a single protein.
+A side effect of this change is that, in contrast to the procedure
+used in Figure~\ref{fig:shared-accuracy}, we do not have to apply any
+peptide-level FDR threshold because all protein grouping is done
+before the data is observed.
 
 We applied this approach to several protein databases and showed
 empirically that including the protein grouping step increases the
@@ -439,7 +444,7 @@ therefore benefit significantly from this particular protein grouping
 approach in terms of number of identifiable protein entities (Table
 \ref{tab:duplicate-proteins}). Note that, unfortunately, some protein
 groups will remain unidentifiable, because all their peptides are
-shared with at least two different protein groups.
+shared by at least two different protein groups.
 
 \begin{figure}
 \begin{center}
@@ -451,22 +456,9 @@ shared with at least two different protein groups.
 \end{tabular}
 \caption{\label{fig:unique-accuracy}\textbf{Using only protein-unique
     peptides gives accurate estimates of the protein-level FDR.}  (A)
-  The figure plots the decoy FDR against observed entrapment FDR.
-  {\em FIXME: What peptide-level FDR was used? --Bill. I do not
-    understand what could be reported here. A protein-FDR
-    vs. peptide-FDR plot? Is that what you had in mind, Bill? --Lukas
-    For Fisher's method and the multPEP method, you have to set some
-    threshold on the peptid-level FDR.  I just think that the
-    threshold should be reported in the figure caption. I was not
-    suggesting changing the plot.  --Bill. Matthew never used any
-    peptide-level threshold. The methods all produce one consistent
-    list of proteins each; lists that do not change when we adjust the
-    FDR threshold. --Lukas} All four methods produce accurate FDR
-  estimates. (B) A logarithmic plot of the region $[0.001, 0.1]$ with
-  the same axes as in (A). Please note that in contrast to the
-  procedure used in Figure \ref{fig:shared-accuracy}, we did not apply
-  any peptide level FDR as all protein grouping was made before data
-  was observed. }
+  The figure plots the decoy FDR against observed entrapment FDR.  All
+  four methods produce accurate FDR estimates. (B) A logarithmic plot
+  of the region $[0.001, 0.1]$ with the same axes as in (A).}
 \end{center}
 \end{figure}
 
@@ -620,38 +612,15 @@ The downsampling approach shows great stability even when only
 sampling a tiny fraction, as small as $100,000$ PSMs, {\em i.e.}
 $0.14\%$ of the original set of $73$ million PSMs.  The Kim data set
 might not be as representative for other types of studies that have
-greater heterogeneity, but it seems likely that the idea will hold as
-long as the selected subsets are not too small and contain a
-sufficient number of positive training examples.  {\em FIXME: I think
-  the relevant value is actually the number of target PSMs available
-  to the first round of SVM training. Maybe we should report this
-  value somewhere. --Bill. Solved?  --Lukas and Matthew I don't
-  understand in what sense this is ``solved.'' Is the number reported
-  somewhere, and I am not seeing it? --Bill. We spelled out the number
-  of PSMs in the text above. Did you mean something different? What
-  did you mean with first round of training, is it the number of PSMs
-  in the initial search direction? --Lukas} In particular, our
-downsampling strategy, which involves some overlap between training
-and test sets, will only avoid problems of overfitting when the
-strategy is carried out on large data sets. This strategy was adopted
-for simplicity of implementation. In a future version of the code, we
-will likely implement a scheme where we downsample each cross
-validation bin individually.
-
-{\em FIXME: I don't
-  understand why this is necessary.  Why can't you downsample first
-  and then do all the cross-validation the same as usual? --Bill This
-  is just to be able to keep the current training procedure as is. We
-  could have made asymmetric train and test parts of each cross
-  validation set, or possibly other arrangements, but this just turned
-  out to play better with the current version of the code. --Lukas OK,
-  but then it seems like you should explain this point and say that
-  it's going to be fixed. ``The current strategy was adopted for
-  simplicity of implementation, but ...'' -- Bill. Maybe that I do not
-  understand with what you mean with ``the same as usual''. I do not
-  think there is a default strategy for how to downsample in this
-  case. One other option would be to downsample each cross validation
-  bin separately. Is that what you had in mind? --Lukas}
+greater heterogeneity, but it seems likely that the downsamping
+strategy will work well as long as the selected subset of PSMs
+contains a sufficient number of positive training examples. In
+particular, our current downsampling strategy, which involves some
+overlap between training and test sets, will only avoid problems of
+overfitting when the strategy is carried out on large data sets. This
+strategy was adopted for simplicity of implementation. In a future
+version of the code, we will implement a scheme in which we downsample
+each cross-validation bin individually.
 
 The most successful protein inference method turned out to be the one
 where proteins were grouped by their theoretical peptide sets and only
