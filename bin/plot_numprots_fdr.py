@@ -13,7 +13,8 @@ import distinct_colours as dc
 def main():
   #percTabBase = "/media/storage/mergespec/data/Pandey/percolator_tdc/tab_subset_500k/Pandey.percolator"
   #percTabBase = "/media/storage/mergespec/data/Pandey/percolator_tdc_uniprot/tab_uppmax/Pandey.percolator"
-  percTabBase = "/media/hdd/matthew/mergespec/data/Linfeng/percolator_tdc/tab/Linfeng.percolator"
+  #percTabBase = "/media/hdd/matthew/mergespec/data/Linfeng/percolator_tdc/tab/Linfeng.percolator"
+  percTabBase = "/media/storage/mergespec/data/Linfeng/percolator_tdc/tab/Linfeng.percolator"
   
   force = False
   
@@ -52,20 +53,16 @@ def main():
     plotQvalues(qvals, numpos, options, colors[i])
   
   
-  if "Pandey" in percTabBase:
-    if "uniprot" in percTabBase:
-      maxY = 7000
-    else:
-      maxY = 14000
-    labelFontSize = 30
-    legendFontSize = 24
-    axisFontSize = 20
-  elif "Linfeng" in percTabBase:
+  if "Linfeng" in percTabBase:
     maxY = 3500
-    labelFontSize = 24
-    legendFontSize = 20
-    axisFontSize = 16
-    
+  elif "uniprot" in percTabBase:
+    maxY = 7000
+  else:
+    maxY = 14000
+  labelFontSize = 30
+  legendFontSize = 24
+  axisFontSize = 20
+  
   plt.figure(1)
   plt.plot([0.01, 0.01], [0, maxY], 'k', linestyle = 'dotted')
   plt.xlim([0, 0.05])

@@ -158,12 +158,25 @@ combined and hence normalizes for protein length.
 
 \section*{Methods}
 
-We downloaded a set of spectra, comprising $2212$ runs on $17$ adult
-tissues, $7$ fetal tissues, and $6$ hematopoietic cell types with a
-total of $\sim 25$ million spectra from~\cite{kim2014draft}. The
-samples were analyzed on an LTQ Orbitrap Velos and Elite (Thermo
-Scientific) equipped with an Easy-nLC II nanoflow LC System
-(Waters). We will refer to this set as the Kim data set.
+We downloaded three sets of spectra, two from large-scale studies on
+human samples with several millions of spectra and one smaller-scale
+study on yeast samples.
+
+The first large-scale set comprised $2212$ runs on $17$ adult tissues,
+$7$ fetal tissues, and $6$ hematopoietic cell types with a total of
+$\sim 25$ million spectra from~\cite{kim2014draft}. The samples were
+analyzed on an LTQ Orbitrap Velos and Elite (Thermo Scientific)
+equipped with an Easy-nLC II nanoflow LC System (Waters). We will
+refer to this set as the Kim data set.
+
+The second large-scale set was taken from a study aimed at studying
+variation of protein abundance in human~\cite{wu2013}. It consisted
+of $561$ runs on $51$ samples from lysates of lymphoblastoid cell
+lines, resulting in $\sim 9$ million spectra. The peptides were
+labelled with TMT 6-plex to enable quantification. The analysis took
+place on an LTQ Orbitrap Velos (Thermo Scientific) equipped with an
+online 2D nanoACQUITY UPLC System (Waters). We will refer to this set
+as the Wu data set.
 
 For verification of the accuracy of protein-level false discovery rate 
 (FDR) estimates we additionally downloaded $92\,974$ spectra from 
@@ -182,7 +195,8 @@ the default parameters, through the Crux 2.0 package
 interface~\cite{mcilwain2014}.
 
 For the Kim data set, the data was searched against the human
-Swiss-Prot and Swiss-Prot+TrEMBL databases (accessed: 2015 Nov 12)
+Swiss-Prot and Swiss-Prot+TrEMBL databases
+(\url{http://www.uniprot.org/}, accessed: 2015 Nov 12)
 concatenated with a database of common contaminants (source:
 \url{http://maxquant.org/contaminants.zip}, accessed: 2015 Apr 17)
 using the Tide search engine, again through the Crux interface. We
@@ -191,11 +205,22 @@ other search parameters were kept the same as in~\cite{kim2014draft}
 (10~ppm precursor window, up to two missed cleavages, up to two
 oxidations of methionine per peptide, variable acetylation of
 N-termini), except that we did not include variable modifications for
-the cyclization of N-terminal glutamine.  For the decoy proteins, we
-reversed the target protein sequences, and separate searches were done
-on the target and decoy protein database for input to Percolator
-3.0. Unless stated otherwise, Percolator was run with the default
-parameters, which includes target-decoy competition on the PSMs.
+the cyclization of N-terminal glutamine. 
+
+For the Wu data set, we searched the spectra against the IPI Human
+database version 3.74 (\url{http://www.ebi.ac.uk/IPI}, accessed: 2014
+May 22) using the Tide search engine through the Crux interface. We
+used Tide's default fragment tolerance, and the other search
+parameters were kep the same as in~\cite{wu2013} (10~ppm precursor
+window, up to two missed cleavages, up to two oxidations of methionine
+per peptide, variable TMT labeling (229.16293 Da) of lysine and
+N-terminal amino acids).
+
+For the decoy proteins, we reversed the target protein sequences, and
+separate searches were done on the target and decoy protein database
+for input to Percolator 3.0. Unless stated otherwise, Percolator was
+run with the default parameters, which includes target-decoy
+competition on the PSMs.
 
 \subsection*{Subset scoring}
 
@@ -235,10 +260,9 @@ ensuring that the entrapment database was very large compared to the
 sample database, thereby reducing the frequency of inadvertently
 inferred absent sample proteins.
 
-The Kim data set was used as an indication of the performance on
-large-scale data. We calculated FDR estimates
-using the picked target-decoy strategy for all
-methods~\cite{savitski2015scalable}.
+The Kim and Wu data sets were used as an indication of the performance
+on large-scale data. We calculated FDR estimates using the picked
+target-decoy strategy for all methods~\cite{savitski2015scalable}.
 
 For the hm\_yeast set, the Tide search engine was also used to obtain
 PSMs, again through the Crux interface. We did a full-digestion search
@@ -246,7 +270,7 @@ using trypsin (including cleavage suppression by proline) with no
 miscleavages and peptide lengths of $[7,50]$, specifically chosen to
 prevent unintended shared peptides between the sample and entrapment
 databases. The procedure for the decoy model was identical to the one 
-mentioned above for the Kim data set.
+mentioned above for the Kim and Wu data sets.
 
 \section*{Results}
 
@@ -353,11 +377,11 @@ This experiment showed that the decoy models based on the reversed
 protein database systematically produce liberal (anti-conservative)
 FDR estimates (Figure \ref{fig:shared-accuracy}). Fisher's method and
 the product of peptide-level PEPs are most liberal for small
-thresholds but manage to provide better estimates above $3\%$ and
-$1\%$ protein-level FDR for the $10\%$ and $5\%$ peptide-level FDR
-thresholds, respectively. For the two-peptide rule, not enough decoy
-proteins remain to see if the FDR estimates will become more accurate
-at some point, and the best-scoring peptide approach produces
+thresholds but manage to provide better estimates above $\sim 3\%$ and
+$\sim 1\%$ protein-level FDR for the $10\%$ and $5\%$ peptide-level
+FDR thresholds, respectively. For the two-peptide rule, not enough
+decoy proteins remain to see if the FDR estimates will become more
+accurate at some point, and the best-scoring peptide approach produces
 dramatically liberal estimates for all thresholds. Taking stricter
 peptide-level thresholds generally improved the accuracy for Fisher's
 method and the product of PEPs. Going down to $5\%$ peptide-level FDR
@@ -434,10 +458,10 @@ shared with at least two different protein groups.
     For Fisher's method and the multPEP method, you have to set some
     threshold on the peptid-level FDR.  I just think that the
     threshold should be reported in the figure caption. I was not
-    suggesting changing the plot.  --Bill. No, Matthew never used any
-    peptide-level treshold. The methods all produce one consistent
-    list of proteins each. Lists that do not change when we adjust the
-    FDR treshold. --Lukas}  All four methods produce accurate FDR
+    suggesting changing the plot.  --Bill. Matthew never used any
+    peptide-level threshold. The methods all produce one consistent
+    list of proteins each; lists that do not change when we adjust the
+    FDR threshold. --Lukas}  All four methods produce accurate FDR
   estimates. (B) A logarithmic plot of the region $[0.001, 0.1]$ with
   the same axes as in (A).}
 \end{center}
@@ -489,12 +513,12 @@ inference method.
 \includegraphics[width=0.45\linewidth]
 {./img/unique-pept-performance} &
 \includegraphics[width=0.45\linewidth]
-{./img/kim-swissprot-performance}\\
+{./img/wu-ipi-performance}\\
 (A) & (B)\\
 \includegraphics[width=0.45\linewidth]
-{./img/kim-uniprot-performance} &
+{./img/kim-swissprot-performance} &
 \includegraphics[width=0.45\linewidth]
-{./img/kim-downsampling-performance}\\
+{./img/kim-uniprot-performance}\\
 (C) & (D)
 \end{tabular}
   \caption{{\bf Comparison of protein inference methods.} (A) The
@@ -503,10 +527,42 @@ observed entrapment FDR for the hm\_yeast set. Fisher's method, the
 product of peptide-level PEPs and the best-scoring peptide approach
 all perform about equally, while the two-peptide rule is much less
 sensitive. (B) A plot of the number of accepted protein groups against
-the decoy FDR for the Kim data sets searched using the Swiss-Prot
-database. The best-scoring peptide approach inferred the most protein
-groups for both protein databases. (C) Same as (B) but using the
-Swiss-Prot+TrEMBL database. (D) A plot of the average number of
+the decoy FDR for the Wu data set. The product of peptide-level PEPs
+and the best-scoring peptide approach perform best, while the
+two-peptide rule and Fisher's method identify far less protein groups.
+(C,D) Same axes as in (B) but for the Kim data set, searched using the
+Swiss-Prot (C) and Swiss-Prot+TrEMBL (D) databases. The best-scoring
+peptide approach inferred the most protein groups for both databases.}
+  \label{fig:power}
+\end{figure}
+
+Finally, we compared the number of inferred proteins as a function of
+the observed entrapment FDR for the different inference methods.  For
+the hm\_yeast data set, the two-peptide rule was the only method
+clearly performing worse than the others (Figure~\ref{fig:power}A). We
+then repeated the assessment on the much larger Wu and Kim data sets,
+using the IPI database for the Wu set and two different databases
+(Swiss-Prot and Swiss-Prot+TrEMBL) for the Kim set. Even for such
+large-scale data, all four protein inference methods took less than a
+minute of processing time due to their simplicity. We looked at the
+number of inferred protein groups at $1\%$ reported protein-level FDR
+(Figure~\ref{fig:power}B-D). For the Wu data set, the multiplication
+of PEPs and the best-scoring peptide approach performed best. Fisher's
+method inferred far fewer protein groups than the other three methods,
+possibly due to incorrect peptides dragging down the $p$ value of
+correct protein groups. For the Kim data set, the best-scoring peptide
+approach inferred the most protein groups for both databases with a
+$3--5\%$ margin over the second best method. Although the many
+proteoforms in the TrEMBL database caused a large drop in the number
+of protein groups for all methods, the relative ranking of methods was
+consistent in both sets of results. 
+
+\begin{figure}
+\centering
+\includegraphics[width=0.6\linewidth]
+{./img/kim-downsampling-performance}
+  \caption{{\bf Sample size dependence of protein inference methods.}
+We plotted the average number of
 accepted protein groups at $1\%$ protein-level FDR over $3$ random
 samples for downsampled subsets for the Kim set using the Swiss-Prot
 database. The number of PSMs was reduced from the original $73$
@@ -515,34 +571,17 @@ the product of peptide-level PEPs and the best-scoring peptide
 approach all perform about equally until $200$K PSMs. Above this
 number of PSMs, the best-scoring peptide approach outperforms all the
 other methods.}
-  \label{fig:power}
+  \label{fig:power-downsample}
 \end{figure}
 
-Finally, we compared the number of inferred proteins as a function of
-the observed entrapment FDR for the different inference methods.  For
-the hm\_yeast data set, the two-peptide rule was the only method
-clearly performing worse than the others (Figure~\ref{fig:power}A). We
-then repeated the assessment on the much larger Kim data set, using
-two different databases (Swiss-Prot and Swiss-Prot+TrEMBL).  Even for
-such large-scale data, all four protein inference methods took less
-than a minute of processing time due to their simplicity. We looked at
-the number of inferred protein groups at $1\%$ reported protein-level
-FDR using all $73$ million PSMs (Figure~\ref{fig:power}B,C).  For both
-databases, the best-scoring peptide approach inferred the most protein
-groups with a $3\%$ margin over the second best method. Fisher's
-method inferred far fewer protein groups than the other three methods,
-possibly due to incorrect peptides dragging down the $p$ value of
-correct protein groups.  Although the many proteoforms in the TrEMBL
-database caused a large drop in the number of protein groups for all
-methods, the relative ranking of methods was consistent in both sets
-of results. In addition, to assess the performance for differently
-sized data sets, we looked at the number of inferred protein groups
-for downsampled subsets of the Kim data set
-(Figure~\ref{fig:power}D). For small data sets, all methods except the
-two-peptide rule perform about equally. However, as the data sets get
-larger, the best-scoring peptide approach starts to show its
-advantage. Overall, we concluded, in agreement with Savitski {\em et
-  al.} \cite{savitski2015scalable}, that the best-scoring peptide
+In addition, to assess the performance for differently sized data
+sets, we looked at the number of inferred protein groups for
+downsampled subsets of the Kim data set
+(Figure~\ref{fig:power-downsample}). For small data sets, all methods
+except the two-peptide rule perform about equally. However, as the
+data sets get larger, the best-scoring peptide approach starts to show
+its advantage. Overall, we concluded, in agreement with Savitski {\em
+et al.} \cite{savitski2015scalable}, that the best-scoring peptide
 approach yielded the best overall performance. We therefore
 implemented this protein inference method in the latest Percolator
 package.
@@ -600,8 +639,8 @@ strategy is carried out on large data sets.  {\em FIXME: I don't
   but then it seems like you should explain this point and say that
   it's going to be fixed. ``The current strategy was adopted for
   simplicity of implementation, but ...'' -- Bill. Maybe that I do not
-  understanbd with what yuou mean with ``the same as usual''. I do not
-  think there is a default startegy for how to downsample in this
+  understand with what you mean with ``the same as usual''. I do not
+  think there is a default strategy for how to downsample in this
   case. One other option would be to downsample each cross validation
   bin separately. Is that what you had in mind? --Lukas}
 
@@ -610,16 +649,15 @@ where proteins were grouped by their theoretical peptide sets and only
 the best-scoring peptide was considered. In this approach, the score
 assigned to a protein essentially ignores the majority of the PSMs,
 something that may feel quite unsatisfying. On the other hand,
-including evidence from other, lower scoring peptide inferences
-is difficult because it often involves lumping incorrect peptide
-inferences into correct protein inferences.  This problem
-can clearly be seen in the poor performance of Fisher's method for
-combining $p$ values on the Kim data set. Setting peptide-level
-thresholds can actually bring Fisher's method up to par with the
-best-scoring peptide approach (data not shown). However, this
-modification does not produce significantly more protein
-inferences, while introducing an extra parameter that needs to be
-set correctly.
+including evidence from other, lower scoring peptide inferences is
+difficult because it often involves lumping incorrect peptide
+inferences into correct protein inferences.  This problem can clearly
+be seen in the poor performance of Fisher's method for combining $p$
+values on the Wu and Kim data sets. Setting peptide-level thresholds
+can actually bring Fisher's method up to par with the best-scoring
+peptide approach (data not shown). However, this modification does not
+produce significantly more protein inferences, while introducing an
+extra parameter that needs to be set correctly.
 
 With regards to the discarded shared peptides, large-scale studies
 give us the luxury of deep coverage, therefore identifying many
