@@ -321,7 +321,7 @@ subset size did seem to increase slightly when taking increasingly
 smaller subsets, but this effect was small. By using a subset of
 $500\,000$ PSMs to train the SVM, Percolator's runtime was reduced
 from almost a full day to less than $10$ minutes. Furthermore, the
-memory consumption dropped from almost $100$~GB to just $10$~GB,
+memory consumption dropped from almost $100$~GB to just $30$~GB,
 allowing analysis of this type of large-scale data to be done on
 commodity computers.
 
@@ -557,29 +557,32 @@ consistent in both sets of results.
 \includegraphics[width=0.6\linewidth]
 {./img/kim-downsampling-performance}
   \caption{{\bf Sample size dependence of protein inference methods.}
-We plotted the average number of
-accepted protein groups at $1\%$ protein-level FDR over $3$ random
-samples for downsampled subsets for the Kim set using the Swiss-Prot
-database. The number of PSMs was reduced from the original $73$
-million PSMs with factors of $2$ until $18$K PSMs. Fisher's method,
-the product of peptide-level PEPs and the best-scoring peptide
-approach all perform about equally until $200$K PSMs. Above this
-number of PSMs, the best-scoring peptide approach outperforms all the
-other methods.}
+    We plotted the average number of accepted protein groups at $1\%$
+    protein-level FDR over triplicate random subsets of using
+    different subset sizes of the Kim set matched to the Swiss-Prot
+    database.  The number of PSMs was reduced from the original $73$
+    million PSMs with factors of $2$ until $18$K PSMs. Fisher's
+    method, the product of peptide-level PEPs and the best-scoring
+    peptide approach all perform about equally until $200$K
+    PSMs. Above this number of PSMs, the best-scoring peptide approach
+    outperforms all the other methods.}
   \label{fig:power-downsample}
 \end{figure}
 
 In addition, to assess the performance for differently sized data
-sets, we looked at the number of inferred protein groups for
-downsampled subsets of the Kim data set
-(Figure~\ref{fig:power-downsample}). For small data sets, all methods
-except the two-peptide rule perform about equally. However, as the
-data sets get larger, the best-scoring peptide approach starts to show
-its advantage. Overall, we concluded, in agreement with Savitski {\em
-et al.} \cite{savitski2015scalable}, that the best-scoring peptide
-approach yielded the best overall performance. We therefore
-implemented this protein inference method in the latest Percolator
-package.
+sets, we looked at the number of inferred protein groups for random
+subsets of the Kim data set
+(Figure~\ref{fig:power-downsample}). Unlike in our resource saving
+downsampling described above, we this time reduced the size of the
+evaluated sets, as our interest this time was to test the performance
+of the inference procedures on smaller sets of peptides. For small
+data sets, all methods except the two-peptide rule perform about
+equally. However, as the data sets get larger, the best-scoring
+peptide approach starts to show its advantage. Overall, we concluded,
+in agreement with Savitski {\em et al.} \cite{savitski2015scalable},
+that the best-scoring peptide approach yielded the best overall
+performance. We therefore implemented this protein inference method in
+the latest Percolator package.
 
 % \begin{table}
 %   \begin{center}
