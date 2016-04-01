@@ -1,4 +1,4 @@
-all: percolator.pdf
+all: percolator.pdf coverletter.pdf
 
 percolator.pdf: percolator.tex percolator.bib
 

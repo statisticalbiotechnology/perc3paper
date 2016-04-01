@@ -44,7 +44,7 @@ Box 1031, 17121 Solna\\ Sweden}
 \doublespacing
 
 Keywords: mass spectrometry - LC-MS/MS, statistical analysis, 
-data processing and analysis, protein inference, simulation
+data processing and analysis, protein inference, large-scale studies
 
 
 \newpage
@@ -69,7 +69,7 @@ the data from a recent study of the draft human proteome containing 25
 million spectra (PM:24870542).
 
 The source code and Ubuntu, Windows, MacOS and Fedora binary packages
-are available from \url{https://github.com/percolator/percolator}
+are available from \url{http://percolator.ms/}
 under an Apache 2.0 license.
 \end{abstract}
 
@@ -367,12 +367,12 @@ of inferred target proteins, which we call the ``entrapment FDR.''
 
 First, we compared the four protein inference methods while retaining
 shared peptides. We grouped proteins that had the same set of
-identified peptides, and also added proteins whose identified peptides
+inferred peptides, and also added proteins whose inferred peptides
 formed a strict subset of this set to each
 group~\cite{nesvizhskii2005interpretation, serang2012review}.  We
 performed the experiment three times, varying the peptide-level FDR
 threshold (10\%, 5\%, and 1\%) used during the protein grouping
-procedure
+procedure.
 
 This experiment showed that the decoy models based on the reversed
 protein database systematically produce liberal (anti-conservative)
@@ -524,7 +524,7 @@ all perform about equally, while the two-peptide rule is much less
 sensitive. (B) A plot of the number of accepted protein groups against
 the decoy FDR for the Wu data set. The product of peptide-level PEPs
 and the best-scoring peptide approach perform best, while the
-two-peptide rule and Fisher's method identify far less protein groups.
+two-peptide rule and Fisher's method inferred far less protein groups.
 (C,D) Same axes as in (B) but for the Kim data set, searched using the
 Swiss-Prot (C) and Swiss-Prot+TrEMBL (D) databases. The best-scoring
 peptide approach inferred the most protein groups for both databases.}
@@ -595,7 +595,7 @@ package.
 %     \end{tabular}
 %   \end{center}
 % \caption{\label{tab:pandey-stats}\textbf{Using the best-scoring
-%   peptide as a protein's representative identified the most protein
+%   peptide as a protein's representative inferred the most protein
 %     groups.} We examined the number of protein inferences for the
 %   four protein inference method using only peptides unique to one of
 %   the protein groups formed by the approach from Nesvizhskii {\em et
@@ -638,7 +638,7 @@ produce significantly more protein inferences, while introducing an
 extra parameter that needs to be set correctly.
 
 With regards to the discarded shared peptides, large-scale studies
-give us the luxury of deep coverage, therefore identifying many
+give us the luxury of deep coverage, therefore inferring many
 peptides that are unique to a protein. This mitigates the problem of
 ignoring shared peptides and makes the task of protein inference much
 simpler and intuitive.  
@@ -647,10 +647,10 @@ The protein grouping method employed here still suffers from the
 problem that an inference of a protein group leaves open the
 question which proteins in the group are actually correct. Here, we
 interpreted it using the null hypothesis that all proteins in the
-group are incorrect, {\em i.e.}, an identified protein group means
+group are incorrect, {\em i.e.}, an inferred protein group means
 that we expect at least one of the proteins to be correct, but we are
 agnostic about which one. Compared to the conventional protein
-grouping approach, which is based on identified peptides instead of
+grouping approach, which is based on inferred peptides instead of
 the full set of theoretical peptides, the groups produced by our
 method are much smaller.  Consequently, ambiguity about which specific
 proteins are present is much rarer.  Furthermore, if genes, rather
