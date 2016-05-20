@@ -74,6 +74,9 @@ def getOutputFN(percTabBase, options):
   elif options["method"] == "multPEP":
     targetOutFN += ".multPEP"
     decoyOutFN += ".multPEP"
+  elif options["method"] == "fido":
+    targetOutFN += ".fido"
+    decoyOutFN += ".fido"
   
   if options["targetDecoyAnalysis"] == "picked":
     targetOutFN += ".picked"
