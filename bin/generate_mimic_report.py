@@ -11,7 +11,7 @@ import distinct_colours as dc
 # FDR = false discovery rate
 
 def main():
-  percTabBase = "/home/matthew/mergespec/data/103111-Yeast-2hr/percolator_tdc/tab/103111-Yeast-2hr.percolator"
+  percTabBase = "/media/storage/mergespec/data/103111-Yeast-2hr/percolator_tdc/tab_subset_scoring/103111-Yeast-2hr.percolator"
   
   force = False
   
@@ -21,7 +21,7 @@ def main():
   options["method"] = "fisher" # fisher, twopept, bestpept, multPEP
   options["targetDecoyAnalysis"] = "picked" # picked, classic, pval
   options["removeSharedPeptides"] = False
-  options["proteinGroupingThreshold"] = 0.1
+  options["proteinGroupingThreshold"] = 0.01
   optionsArray.append(options)
   
   options = copy.deepcopy(options)
@@ -36,9 +36,17 @@ def main():
   options["method"] = "multPEP" # fisher, twopept, bestpept, multPEP
   optionsArray.append(options)
   
+  options = copy.deepcopy(options)
+  options["targetDecoyAnalysis"] = "classic"
+  options["method"] = "fido" # fisher, twopept, bestpept, multPEP
+  optionsArray.append(options)
+  
   #plt.suptitle("Mimic hm\_yeast", fontsize = 24, fontweight = 'bold')
   
-  colors = dc.get_distinct_grey(len(optionsArray))
+  if len(optionsArray) <= 4:
+    colors = dc.get_distinct_grey(len(optionsArray))
+  else:
+    colors = dc.get_distinct(len(optionsArray))
   
   for i, options in enumerate(optionsArray):
     targetOutFN, decoyOutFN = prot.getOutputFN(percTabBase, options)
