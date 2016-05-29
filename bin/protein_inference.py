@@ -74,6 +74,9 @@ def getOutputFN(percTabBase, options):
   elif options["method"] == "multPEP":
     targetOutFN += ".multPEP"
     decoyOutFN += ".multPEP"
+  elif options["method"] == "fido":
+    targetOutFN += ".fido"
+    decoyOutFN += ".fido"
   
   if options["targetDecoyAnalysis"] == "picked":
     targetOutFN += ".picked"
@@ -92,20 +95,21 @@ def getOutputFN(percTabBase, options):
   
   return targetOutFN, decoyOutFN
 
-def writeProteinFdrs(percTabBase, options):
-  if options["method"] == "fisher" and options["removeSharedPeptides"]:
-    writeProteinFdrsFromProts(percTabBase, options)
-  else:
-    writeProteinFdrsFromPepts(percTabBase, options)
+def writeProteinFdrs(percTabBase, options, targetProtGroups = [], decoyProtGroups = []):
+  #if options["method"] == "fisher" and options["removeSharedPeptides"]:
+  #  writeProteinFdrsFromProts(percTabBase, options)
+  #else:
+    writeProteinFdrsFromPepts(percTabBase, options, targetProtGroups, decoyProtGroups)
  
-def writeProteinFdrsFromPepts(percTabBase, options):
+def writeProteinFdrsFromPepts(percTabBase, options, targetProtGroups = [], decoyProtGroups = []):
   targetFN = percTabBase + ".tab.peptides"
   decoyFN = percTabBase + ".decoys.tab.peptides"  
   
   targetOutFN, decoyOutFN = getOutputFN(percTabBase, options)
   outHeader = ["ProteinId", "ProteinGroupId", "q-value", "posterior_error_prob", "peptideIds"]
   
-  targetProtGroups, decoyProtGroups = getProteinGroupMaps(percTabBase)
+  if len(targetProtGroups) == 0:
+    targetProtGroups, decoyProtGroups = getProteinGroupMaps(percTabBase)
   
   print targetFN
   print decoyFN

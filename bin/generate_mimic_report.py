@@ -11,7 +11,7 @@ import distinct_colours as dc
 # FDR = false discovery rate
 
 def main():
-  percTabBase = "/home/matthew/mergespec/data/103111-Yeast-2hr/percolator_tdc/tab/103111-Yeast-2hr.percolator"
+  percTabBase = "/media/storage/mergespec/data/103111-Yeast-2hr/percolator_tdc/tab_subset_scoring/103111-Yeast-2hr.percolator"
   
   force = False
   
@@ -36,9 +36,17 @@ def main():
   options["method"] = "multPEP" # fisher, twopept, bestpept, multPEP
   optionsArray.append(options)
   
+  options = copy.deepcopy(options)
+  options["targetDecoyAnalysis"] = "classic"
+  options["method"] = "fido" # fisher, twopept, bestpept, multPEP
+  optionsArray.append(options)
+  
   #plt.suptitle("Mimic hm\_yeast", fontsize = 24, fontweight = 'bold')
   
-  colors = dc.get_distinct_grey(len(optionsArray))
+  if len(optionsArray) <= 4:
+    colors = dc.get_distinct_grey(len(optionsArray))
+  else:
+    colors = dc.get_distinct(len(optionsArray))
   
   for i, options in enumerate(optionsArray):
     targetOutFN, decoyOutFN = prot.getOutputFN(percTabBase, options)
@@ -62,7 +70,7 @@ def main():
   lowerMargin = 1.0/upperMargin
   
   xlabel = "Decoy FDR"
-  ylabel = "Obs. entrapment FDR"
+  ylabel = "Entrapment FDR"
   labelFontSize = 30
   
   plt.figure(1)
@@ -98,20 +106,24 @@ def main():
   plt.xlim([0, 0.05])
   plt.ylim([0, 1200])
   plt.xlabel(ylabel, fontsize = labelFontSize)
-  plt.ylabel("Sample protein groups", fontsize = labelFontSize)
+  plt.ylabel("Number of protein groups", fontsize = labelFontSize)
   plt.legend(loc = 'lower right', prop={'size':24})
   setAxisFontSize(20)
   plt.tight_layout()
   
   plt.figure(5)
-  plt.plot([np.log10(a) for a in x], [np.log10(a) for a in x], 'k-')
-  plt.plot([np.log10(a) for a in x], [np.log10(a*upperMargin) for a in x], 'k--')
-  plt.plot([np.log10(a) for a in x], [np.log10(a*lowerMargin) for a in x], 'k--')
-  plt.axis([-3, -1, -3, -1])
-  plt.xlabel("$\log_{10}$(" + xlabel + ")", fontsize = labelFontSize)
-  plt.ylabel("$\log_{10}$(" + ylabel + ")", fontsize = labelFontSize)
+  x += 1e-20
+  plt.plot(x, x, 'k-')
+  plt.plot(x, x*upperMargin, 'k--')
+  plt.plot(x, x*lowerMargin, 'k--')
+  plt.axis([1e-3, 1e-1, 1e-3, 1e-1])
+  plt.xlabel(xlabel, fontsize = labelFontSize)
+  plt.ylabel(ylabel, fontsize = labelFontSize)
   plt.legend(loc = 'lower right', prop={'size':24})
   setAxisFontSize(20)
+  ax = plt.gca()
+  ax.set_yscale('log')
+  ax.set_xscale('log')
   plt.tight_layout()
   
   #plt.subplots_adjust(top=0.92)
@@ -215,13 +227,13 @@ def plotQvalues(qvals, fdrs, fomrs, tpfp, options, color):
   
   #plt.subplot(numRows, numCols, figIdx)
   plt.figure(figIdx)
-  plt.plot([x[1]/float(x[1]+x[0]) for x in tpfp], [x[0] for x in tpfp], label = options["method"], linewidth = 2, color = color)
+  plt.plot([x[1]/float(x[1]+x[0]) for x in tpfp], [x[0]+x[1] for x in tpfp], label = options["method"], linewidth = 2, color = color)
   
   figIdx += 1
   
   #plt.subplot(numRows, numCols, figIdx)
   plt.figure(figIdx)
-  plt.plot([np.log10(qval + 1e-20) for qval in qvals], [np.log10(fdr+1e-20) for fdr in fdrs], label = options["method"], linewidth = 2, color = color)
+  plt.plot([q+1e-20 for q in qvals], [f+1e-20 for f in fdrs], label = options["method"], linewidth = 2, color = color)
    
 if __name__ == "__main__":
   main()
