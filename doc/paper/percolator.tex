@@ -81,7 +81,7 @@ Percolator~\cite{kall2007} has played a prominent part in the analysis
 pipelines of shotgun proteomics experiments for the last decade, as a
 post-processor of the results from database search engines such as
 SEQUEST~\cite{eng1994}, MASCOT~\cite{cottrell1999},
-X!Tandem~\cite{craig2004tandem} and MS-GF+~\cite{kim2008}. Not only
+X!~Tandem~\cite{craig2004tandem} and MS-GF+~\cite{kim2008}. Not only
 does Percolator provide a significant boost in the number of
 statistically significant peptide-spectrum matches (PSMs) or peptides,
 it also provides a consistent statistical framework in which to
@@ -93,7 +93,7 @@ support of the Percolator package, we present two major additions
 aimed at supporting analysis of large scale proteomics studies.
 
 First, as advances in technology continue to reduce the cost and
-effort needed to carry out shotgun proteomic experiments, the amount
+effort needed to carry out shotgun proteomics experiments, the amount
 of data per study will keep rising steadily. While previous versions
 of Percolator are able to process the data from the vast majority of
 current studies in a reasonable time frame, the algorithm has some
@@ -102,11 +102,11 @@ computing facility. When processing millions of PSMs, the majority of
 Percolator's processing time is spent on training support vector
 machine (SVM) classifiers.  In some settings, however, the performance
 of the SVM as a function of the size of its training set plateaus at
-an relatively low number of input PSMs~\cite{gonnelli2015decoy}. Here,
+a relatively low number of input PSMs~\cite{gonnelli2015decoy}. Here,
 we use Percolator's semi-supervised learning algorithm to train SVMs
-on a randomly selected subset of the PSMs and used the resulting score
+on a randomly selected subset of the PSMs and use the resulting score
 vectors to evaluate the rest of the PSMs.  This random downsampling
-approach yields much faster analysis times without any loss in
+approach yields much shorter analysis times without any loss in
 statistical power.
 
 Second, we have investigated efficient ways to obtain protein-level 
@@ -121,18 +121,18 @@ rule~\cite{carr2004need, gupta2009false}, the product of
 peptide-level posterior error probabilities (PEPs), and Fisher's 
 method for combining independent $p$~values.
 
-Although each of these methods is efficient to compute, they each
-offer specific pros and cons Savitski {\em et
-  al.}~\cite{savitski2015scalable} showed that, on large-scale data
-sets, taking the best-scoring peptide as the representative of a
-protein was superior to incorporating information from lower scoring
-peptides. However, this approach is unsatisfying because the method
-discards all information but the best-scoring PSMs for each protein.
-Perhaps the simplest way to combine evidence at the peptide level is
-widely used the two-peptide rule.  This approach requires evidence for
+Although each of these methods is efficient to compute, they each 
+offer specific pros and cons. Savitski {\em et 
+al.}~\cite{savitski2015scalable} showed that, on large-scale data 
+sets, taking the best-scoring peptide as the representative of a 
+protein was superior to incorporating information from lower-scoring 
+peptides. However, this approach is unsatisfying because the method 
+discards all information but the best-scoring PSM for each protein. 
+Perhaps the simplest way to combine evidence at the peptide level is 
+the widely used two-peptide rule.  This approach requires evidence for
 a second peptide to support a protein inference, thereby preventing
 so-called ``one-hit wonders'', {\em i.e.}, cases where a single,
-potentially spurious PSMs yields a spurious protein detection. An
+potentially spurious PSM yields a spurious protein detection. An
 alternative that takes into account even more evidence is to compute
 the product of peptide-level PEPs. This procedure takes into account
 all peptides within a protein and provides some protection against
@@ -148,7 +148,7 @@ latter concern also applies to Fisher's method, which is a classical
 technique for combining independent
 $p$~values~\cite{fisher1925statistical}. Like the product of PEPs,
 Fisher's method takes into account all peptides of a protein,
-penalizing one-hit wonders on the basis of its many accompanying
+penalizing one-hit wonders on the basis of their many accompanying
 incorrect peptide inferences~\cite{spirin2011assigning, alves2015mass,
   granholm2013determining}.  This last characteristic can however also
 be a disadvantage, as many incorrect peptide inferences can overrule a
@@ -162,20 +162,20 @@ We downloaded three sets of spectra, two from large-scale studies on
 human samples with several millions of spectra and one smaller-scale
 study on yeast samples.
 
-The first large-scale set comprised $2212$ runs on $17$ adult tissues,
+The first large-scale set comprises $2212$ runs on $17$ adult tissues,
 $7$ fetal tissues, and $6$ hematopoietic cell types with a total of
-$\sim 25$ million spectra from~\cite{kim2014draft}. The samples were
+${\sim}25$ million spectra~\cite{kim2014draft}. The samples were
 analyzed on an LTQ Orbitrap Velos and Elite (Thermo Scientific)
-equipped with an Easy-nLC II nanoflow LC System (Waters). We will
+equipped with an Easy-nLC II nanoflow LC systems (Waters). We will
 refer to this set as the Kim data set.
 
 The second large-scale set was taken from a study aimed at studying
-variation of protein abundance in human~\cite{wu2013}. It consisted
+variation of protein abundance in human~\cite{wu2013}. It consists
 of $561$ runs on $51$ samples from lysates of lymphoblastoid cell
-lines, resulting in $\sim 9$ million spectra. The peptides were
+lines, resulting in ${\sim}9$ million spectra. The peptides were
 labelled with TMT 6-plex to enable quantification. The analysis took
 place on an LTQ Orbitrap Velos (Thermo Scientific) equipped with an
-online 2D nanoACQUITY UPLC System (Waters). We will refer to this set
+online 2D nanoACQUITY UPLC system (Waters). We will refer to this set
 as the Wu data set.
 
 For verification of the accuracy of protein-level false discovery rate 
@@ -186,8 +186,8 @@ et al.}~\cite{moruz2013}.  We will refer to this set as the hm\_yeast
 set.
 
 Converting the RAW files to MS1 and MS2 files was done with
-Proteowizard~\cite{kessner2008} with vendor peak picking for the MS2
-spectra and all other options left to their default values.  Next, we
+ProteoWizard~\cite{kessner2008} with vendor peak picking for the MS2
+spectra and all other options left at their default values.  Next, we
 assigned high-resolution precursor masses and charges using
 information from the precursor scans with Hardkl\"{o}r
 \cite{hoopmann2007} followed by Bullseye \cite{hsieh2009}, both with
@@ -211,26 +211,26 @@ For the Wu data set, we searched the spectra against the IPI Human
 database version 3.74 (\url{http://www.ebi.ac.uk/IPI}, accessed: 2014
 May 22) using the Tide search engine through the Crux interface. We
 used Tide's default fragment tolerance, and the other search
-parameters were kep the same as in~\cite{wu2013} (10~ppm precursor
+parameters were kept the same as in~\cite{wu2013} (10~ppm precursor
 window, up to two missed cleavages, up to two oxidations of methionine
 per peptide, variable TMT labeling (229.16293 Da) of lysine and
 N-terminal amino acids).
 
-For the decoy proteins, we reversed the target protein sequences, and
-separate searches were done on the target and decoy protein database
-for input to Percolator 3.0. Unless stated otherwise, Percolator was
-run with the default parameters, which includes target-decoy
-competition on the PSMs.
+The target protein sequences were reversed to construct a decoy 
+protein database, and separate searches were done on the target and 
+decoy protein database for input to Percolator 3.0. Unless stated 
+otherwise, Percolator was run with the default parameters, which 
+includes target-decoy competition on the PSMs.
 
 \subsection*{Subset scoring}
 
-By default, Percolator's semi-supervised learning algorithm randomly
-splits the training set into three subsets and computes trains three
-separate SVM classifiers, each trained on two of the three subsets and
-tested on the remaining subset.  The final scores are thus calculated
-using the classifier for which the PSM was in the test set. However,
-to implement subset scoring, we applied the normal training algorithm
-on a random subset of the PSMs, resulting in three SVMs.  Each PSM's
+By default, Percolator's semi-supervised learning algorithm randomly 
+splits the training set into three subsets and trains three separate 
+SVM classifiers, each trained on two of the three subsets and tested 
+on the remaining subset.  The final scores are thus calculated using 
+the classifier for which the PSM was in the test set. However, to 
+implement subset scoring, we applied the normal training algorithm on 
+a random subset of the PSMs, resulting in three SVMs.  Each PSM's 
 score was computed as the average of the scores from these three SVMs.
 
 \subsection*{Protein inference method benchmark}
@@ -264,12 +264,13 @@ The Kim and Wu data sets were used as an indication of the performance
 on large-scale data. We calculated FDR estimates using the picked
 target-decoy strategy for all methods~\cite{savitski2015scalable}.
 
-For the hm\_yeast set, the Tide search engine was also used to obtain
-PSMs, again through the Crux interface. We did a full-digestion search
-using trypsin (including cleavage suppression by proline) with no
-miscleavages and peptide lengths of $[7,50]$, specifically chosen to
-prevent unintended shared peptides between the sample and entrapment
-databases. The procedure for the decoy model was identical to the one 
+For the hm\_yeast set, the Tide search engine was also used to obtain 
+PSMs, again through the Crux interface. We did a full-digestion search 
+using trypsin (including cleavage suppression by proline) with no 
+miscleavages, specifically chosen to prevent unintended shared 
+peptides between the sample and entrapment databases. The minimum and 
+maximum peptide length were respectively set to $7$ and $50$ amino 
+acids. The procedure for the decoy model was identical to the one 
 mentioned above for the Kim and Wu data sets.
 
 \section*{Results}
@@ -288,9 +289,9 @@ mentioned above for the Kim and Wu data sets.
   resulting support vectors. The figure plots, as a function of data
   set size, the ratio of significant PSMs (left) and peptides (right)
   at a $q$ value threshold of $0.01$ over the same number when using
-  the full training set of $73$ million PSMs. The number significant
-  PSMs and unique peptides does not drop significantly, even for
-  subsets of $100\,000$ PSMs.}
+  the full training set of $73$ million PSMs. The number of 
+  significant PSMs and unique peptides does not drop significantly, 
+  even for subsets of $100\,000$ PSMs.}
 \end{center}
 \end{figure}
 
@@ -373,22 +374,22 @@ performed the experiment three times, varying the peptide-level FDR
 threshold (10\%, 5\%, and 1\%) used during the protein grouping
 procedure.
 
-This experiment showed that the decoy models based on the reversed
-protein database systematically produce liberal (anti-conservative)
-FDR estimates (Figure \ref{fig:shared-accuracy}). Fisher's method and
-the product of peptide-level PEPs are most liberal for small
-thresholds but manage to provide better estimates above $\sim 3\%$ and
-$\sim 1\%$ protein-level FDR for the $10\%$ and $5\%$ peptide-level
-FDR thresholds, respectively. For the two-peptide rule, not enough
-decoy proteins remain to see if the FDR estimates will become more
-accurate at some point, and the best-scoring peptide approach produces
-dramatically liberal estimates for all thresholds. Taking stricter
-peptide-level thresholds generally improved the accuracy for Fisher's
-method and the product of PEPs. Going down to $5\%$ peptide-level FDR
-still produced anti-conservative protein-level FDR estimates in the
-region below $1\%$ protein-level FDR, but going further down to $1\%$
-peptide-level FDR actually produced reasonable, though still slightly
-anti-conservative, estimates in that region.
+This experiment showed that the decoy models based on the reversed 
+protein database systematically produce liberal (anti-conservative) 
+FDR estimates (Figure \ref{fig:shared-accuracy}). Fisher's method and 
+the product of peptide-level PEPs are most liberal for small 
+thresholds but manage to provide better estimates above ${\sim}3\%$ 
+and ${\sim}1\%$ protein-level FDR for the $10\%$ and $5\%$ 
+peptide-level FDR thresholds, respectively. For the two-peptide rule, 
+not enough decoy proteins remain to see if the FDR estimates will 
+become more accurate at some point, and the best-scoring peptide 
+approach produces dramatically liberal estimates for all thresholds. 
+Taking stricter peptide-level thresholds generally improved the 
+accuracy for Fisher's method and the product of PEPs. Going down to 
+$5\%$ peptide-level FDR still produced anti-conservative protein-level 
+FDR estimates in the region below $1\%$ protein-level FDR, but going 
+further down to $1\%$ peptide-level FDR actually produced reasonable, 
+though still slightly anti-conservative, estimates in that region.
 
 \subsection*{Eliminating shared peptides improves calibration}
 
@@ -523,10 +524,11 @@ all perform about equally, while the two-peptide rule is much less
 sensitive. (B) A plot of the number of accepted protein groups against
 the decoy FDR for the Wu data set. The product of peptide-level PEPs
 and the best-scoring peptide approach perform best, while the
-two-peptide rule and Fisher's method inferred far less protein groups.
-(C,D) Same axes as in (B) but for the Kim data set, searched using the
-Swiss-Prot (C) and Swiss-Prot+TrEMBL (D) databases. The best-scoring
-peptide approach inferred the most protein groups for both databases.}
+two-peptide rule and Fisher's method inferred far fewer protein 
+groups. (C,D) Same axes as in (B) but for the Kim data set, searched 
+using the Swiss-Prot (C) and Swiss-Prot+TrEMBL (D) databases. The 
+best-scoring peptide approach inferred the most protein groups for 
+both databases.}
   \label{fig:power}
 \end{figure}
 
@@ -546,7 +548,7 @@ method inferred far fewer protein groups than the other three methods,
 possibly due to incorrect peptides dragging down the $p$ value of
 correct protein groups. For the Kim data set, the best-scoring peptide
 approach inferred the most protein groups for both databases with a
-$3--5\%$ margin over the second best method. Although the many
+$3\mbox{--}5\%$ margin over the second-best method. Although the many
 proteoforms in the TrEMBL database caused a large drop in the number
 of protein groups for all methods, the relative ranking of methods was
 consistent in both sets of results. 
@@ -571,7 +573,7 @@ consistent in both sets of results.
 In addition, to assess the performance for differently sized data
 sets, we looked at the number of inferred protein groups for random
 subsets of the Kim data set
-(Figure~\ref{fig:power-downsample}). Unlike in our resource saving
+(Figure~\ref{fig:power-downsample}). Unlike in our resource-saving
 downsampling described above, we this time reduced the size of the
 evaluated sets, as our interest this time was to test the performance
 of the inference procedures on smaller sets of peptides. For small
@@ -607,29 +609,29 @@ the latest Percolator package.
 \section*{Discussion}
 
 We demonstrated that Percolator 3.0 can calculate accurate
-protein-level FDRs on a human proteome scale study, in this case $73$
+protein-level FDRs on a human proteome-scale study, in this case $73$
 million PSMs, in a matter of minutes on a commodity computer.
 
-The downsampling approach shows great stability even when only
-sampling a tiny fraction, as small as $100,000$ PSMs, {\em i.e.}
-$0.14\%$ of the original set of $73$ million PSMs.  The Kim data set
-might not be as representative for other types of studies that have
-greater heterogeneity, but it seems likely that the downsamping
-strategy will work well as long as the selected subset of PSMs
-contains a sufficient number of positive training examples. In
-particular, our current downsampling strategy, which involves some
-overlap between training and test sets, will only avoid problems of
-overfitting when the strategy is carried out on large data sets. This
-strategy was adopted for simplicity of implementation. In a future
-version of the code, we will implement a scheme in which we downsample
-each cross-validation bin individually.
+The downsampling approach for SVM training on a subset of the PSMs 
+shows great stability even when only sampling a tiny fraction, as 
+small as $100,000$ PSMs, {\em i.e.} $0.14\%$ of the original set of 
+$73$ million PSMs.  The Kim data set might not be as representative 
+for other types of studies that have greater heterogeneity, but it 
+seems likely that the downsamping strategy will work well as long as 
+the selected subset of PSMs contains a sufficient number of positive 
+training examples. In particular, our current downsampling strategy, 
+which involves some overlap between training and test sets, will only 
+avoid problems of overfitting when the strategy is carried out on 
+large data sets. This strategy was adopted for simplicity of 
+implementation. In a future version of the code, we will implement a 
+scheme in which we downsample each cross-validation bin individually.
 
 The most successful protein inference method turned out to be the one
 where proteins were grouped by their theoretical peptide sets and only
 the best-scoring peptide was considered. In this approach, the score
 assigned to a protein essentially ignores the majority of the PSMs,
 something that may feel quite unsatisfying. On the other hand,
-including evidence from other, lower scoring peptide inferences is
+including evidence from other, lower-scoring peptide inferences is
 difficult because it often involves lumping incorrect peptide
 inferences into correct protein inferences.  This problem can clearly
 be seen in the poor performance of Fisher's method for combining $p$
