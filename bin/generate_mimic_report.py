@@ -43,10 +43,9 @@ def main():
   
   #plt.suptitle("Mimic hm\_yeast", fontsize = 24, fontweight = 'bold')
   
-  if len(optionsArray) <= 4:
-    colors = dc.get_distinct_grey(len(optionsArray))
-  else:
-    colors = dc.get_distinct(len(optionsArray))
+  colors = dc.get_distinct_grey(min([len(optionsArray),4]))
+  if len(optionsArray) == 5:    
+    colors.append('#AA4499')
   
   for i, options in enumerate(optionsArray):
     targetOutFN, decoyOutFN = prot.getOutputFN(percTabBase, options)
@@ -73,8 +72,8 @@ def main():
   ylabel = "Entrapment FDR"
   labelFontSize = 30
   
-  plt.figure(1)
   x = np.linspace(1e-20, 1, num=1000)
+  plt.figure(1)
   plt.axis([0, 1, 0, 1])
   plt.plot(x, x, 'k-')
   plt.plot(x, [a*upperMargin for a in x], 'k--')
@@ -92,7 +91,10 @@ def main():
   plt.axis([0, 0.1, 0, 0.1])
   plt.xlabel(xlabel, fontsize = labelFontSize)
   plt.ylabel(ylabel, fontsize = labelFontSize)
-  plt.legend(loc = 'lower right', prop={'size':24})
+  if len(optionsArray) == 5:
+    plt.legend(loc = 'lower right', prop={'size':22}, labelspacing = 0.2, handletextpad = 0.2, borderpad = 0.4)
+  else:
+    plt.legend(loc = 'lower right', prop={'size':24})
   setAxisFontSize(20)
   plt.tight_layout()
   
@@ -100,7 +102,7 @@ def main():
   plt.axis([0, 0.2, 0, 0.2])
   plt.xlabel("False Ommission Rate", fontsize = labelFontSize)
   plt.ylabel(ylabel, fontsize = labelFontSize)
-  
+
   plt.figure(4)
   plt.plot([0.01, 0.01], [0, 2000], 'k', linestyle = 'dotted')
   plt.xlim([0, 0.05])
