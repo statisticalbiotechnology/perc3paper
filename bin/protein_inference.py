@@ -84,6 +84,9 @@ def getOutputFN(percTabBase, options):
   elif options["targetDecoyAnalysis"] == "classic":
     targetOutFN += ".classic"
     decoyOutFN += ".classic"
+  elif options["targetDecoyAnalysis"] == "exact":
+    targetOutFN += ".exact"
+    decoyOutFN += ".exact"
   
   if not options["removeSharedPeptides"]:
     targetOutFN += ".with_shared_pepts"

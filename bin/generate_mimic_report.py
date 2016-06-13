@@ -20,8 +20,8 @@ def main():
   options = {}
   options["method"] = "fisher" # fisher, twopept, bestpept, multPEP
   options["targetDecoyAnalysis"] = "picked" # picked, classic, pval
-  options["removeSharedPeptides"] = False
-  options["proteinGroupingThreshold"] = 0.01
+  options["removeSharedPeptides"] = True
+  options["proteinGroupingThreshold"] = 1.0
   optionsArray.append(options)
   
   options = copy.deepcopy(options)
@@ -37,7 +37,9 @@ def main():
   optionsArray.append(options)
   
   options = copy.deepcopy(options)
-  options["targetDecoyAnalysis"] = "classic"
+  options["removeSharedPeptides"] = False
+  options["proteinGroupingThreshold"] = 0.05
+  options["targetDecoyAnalysis"] = "exact"
   options["method"] = "fido" # fisher, twopept, bestpept, multPEP
   optionsArray.append(options)
   
