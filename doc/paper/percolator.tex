@@ -311,9 +311,9 @@ interface. We did a full-digestion search using trypsin (including
 cleavage suppression by proline) with no miscleavages, specifically 
 chosen to prevent unintended shared peptides between the sample and 
 entrapment databases. The minimum and maximum peptide length were 
-respectively set to $7$ and $50$ amino acids. The procedure for the 
-decoy model was identical to the one mentioned above for the Kim and 
-Wu data sets.
+respectively set to $7$ and $50$ amino acids. All other parameters 
+were left at their default values. The procedure for the decoy model 
+was identical to the one mentioned above for the Kim and Wu data sets.
 
 \subsection*{Protein inference method performance benchmark}
 
@@ -381,18 +381,18 @@ large-scale data to be done on commodity computers.
 
 \begin{figure}
 \begin{center}
-\begin{tabular}{cc} 
-\includegraphics[width=0.45\linewidth]
-  {./img/shared-pept-accuracy-fdr10-with-fido-exact} &
-\includegraphics[width=0.45\linewidth]
-  {./img/shared-pept-accuracy-fdr5-with-fido-exact}\\
- (A) & (B) 
-\end{tabular}
-\begin{tabular}{c} 
-\includegraphics[width=0.45\linewidth]
-  {./img/shared-pept-accuracy-fdr1-with-fido-exact}\\
-(C)
-\end{tabular}
+  \begin{tabular}{cc}
+\includegraphics[width=0.45\linewidth]{
+./img/shared-pept-accuracy-fdr10-with-fido-exact} &
+\includegraphics[width=0.45\linewidth]{
+./img/shared-pept-accuracy-fdr5-with-fido-exact}\\
+  (A) & (B) 
+  \end{tabular}
+  \begin{tabular}{c}
+\includegraphics[width=0.45\linewidth]{
+./img/shared-pept-accuracy-fdr1-with-fido-exact}\\
+  (C)
+  \end{tabular}
 \caption{\label{fig:shared-accuracy}\textbf{Retaining shared peptides
 leads to poor calibration of the decoy model for all the tested
 protein inference methods.} The figures plots reported $q$~values from
@@ -580,8 +580,8 @@ inference method.
 \begin{figure}
 \centering
 \begin{tabular}{ccc}
-\includegraphics[width=0.45\linewidth]
-{./img/unique-pept-performance-with-fido-exact} &
+\includegraphics[width=0.45\linewidth]{
+./img/unique-pept-performance-with-fido-exact} &
 \includegraphics[width=0.45\linewidth]
 {./img/wu-ipi-performance}\\
 (A) & (B)\\

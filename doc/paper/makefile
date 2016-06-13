@@ -1,7 +1,11 @@
-all: percolator.pdf coverletter.pdf
+all: percolator.pdf diff.pdf coverletter.pdf
 
-percolator.pdf: percolator.tex percolator.bib
+percolator.pdf: percolator.tex percolator.bib img/*
 
+diff.tex: percolator.tex
+	git show v1:./$? > /tmp/$?
+	latexdiff /tmp/$? $? > diff.tex
+	
 %.pdf: %.tex
 	pdflatex -shell-escape $*.tex
 	if ( grep -q citation $*.aux ) ; then \
