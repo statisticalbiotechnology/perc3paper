@@ -240,15 +240,15 @@ consisting of the selection of a subset of predefined size of the PSMs
 by random sampling. Subsequently, we applied Percolator's normal 
 training algorithm on this subset, resulting in three SVM classifiers 
 in the same fashion as mentioned above. For each PSM, including those 
-not selected during random sampling, we then calculated its score as 
-the average of the scores from each of the three SVMs. This strategy 
-involves some overlap between training and test sets, {\em i.e.} PSMs 
-selected as part of the training subset will be evaluated by two SVM 
-classifiers which were trained on this particular PSM, and will only 
-avoid problems of overfitting when the strategy is carried out on 
-large data sets. This strategy was adopted for simplicity of 
-implementation. In a future version of the code, we will implement a 
-scheme in which we downsample each cross-validation bin individually.
+not selected for training, we then calculated its score as the average 
+of the scores from each of the three SVMs. This strategy involves some 
+overlap between training and test sets, {\em i.e.} PSMs selected as 
+part of the training subset will be evaluated by two SVM classifiers 
+which were trained on this particular PSM, and will only avoid 
+problems of overfitting when the strategy is carried out on large data 
+sets. This strategy was adopted for simplicity of implementation. In a 
+future version of the code, we will implement a scheme in which we 
+downsample each cross-validation bin individually.
 
 Preliminary results showed that including target and decoy PSMs 
 belonging to the same spectrum together during the selection of the 
@@ -263,12 +263,12 @@ hm\_yeast data set by using a {\em sample} and {\em entrapment}
 database, as previously described~\cite{granholm2013determining}. The 
 goal of this approach is to provide a ground truth regarding the 
 correctness of peptide and protein inferences made by the algorithm 
-under investigation. The sample database contains the proteins of 
-interest, while the entrapment database consists of proteins in which 
-the peptide sequences of the proteins in the sample database are 
+under investigation~\cite{the:how}. The sample database contains the 
+protein sequences of interest, while the entrapment database consists 
+of proteins in which the peptide sequences in the sample database are 
 shuffled. We search against the concatenated database of the sample 
-and entrapment database, and subsequently assume that any hit to the 
-sample database is a true positive and any hit to the entrapment 
+and entrapment database, and subsequently assume that any match to the 
+sample database is a true positive and any match to the entrapment 
 database is a false positive. 
 
 The assumption that any hit to the sample database is a true positive 
@@ -277,7 +277,7 @@ inferred through an incorrect PSM. The purpose of the entrapment
 database is to attract the majority of these incorrect target PSMs, 
 thereby ensuring that the majority of PSMs, peptides and proteins 
 matching to the sample database are correct. The larger the entrapment 
-database, the lower the probability that a true positive is not 
+database, the higher the probability that a true positive is 
 actually true. For example, using an entrapment database $9$ times the 
 size of the sample database, means that, on PSM level, we will 
 underestimate the amount of false positives in the entrapment FDR by 
@@ -714,19 +714,22 @@ peptides that are unique to a protein. This mitigates the problem of
 ignoring shared peptides and makes the task of protein inference much
 simpler and intuitive.
 
-The protein grouping method employed here still suffers from the
-problem that an inference of a protein group leaves open the
-question which proteins in the group are actually correct. Here, we
-interpreted it using the null hypothesis that all proteins in the
-group are incorrect, {\em i.e.}, an inferred protein group means
-that we expect at least one of the proteins to be correct, but we are
-agnostic about which one. Compared to the conventional protein
-grouping approach, which is based on inferred peptides instead of
-the full set of theoretical peptides, the groups produced by our
-method are much smaller.  Consequently, ambiguity about which specific
-proteins are present is much rarer.  Furthermore, if genes, rather
-than proteoforms, are the entities of interest, then using databases
-with few proteoforms such as Swiss-Prot should do the job.
+The protein grouping method employed here still suffers from the 
+problem that an inference of a protein group leaves open the question 
+which proteins in the group are actually correct. Here, we interpreted 
+it using the null hypothesis that all proteins in the group are 
+incorrect, {\em i.e.}, an inferred protein group means that we expect 
+at least one of the proteins to be correct, but we are agnostic about 
+which one. Compared to the conventional protein grouping approach, 
+which is based on inferred peptides instead of the full set of 
+theoretical peptides, the groups produced by our method are much 
+smaller. For the Swiss-Prot database, virtually all protein groups 
+contained only $1$ protein and for the Swiss-Prot + TrEMBL database 
+they typically contained just $1$ or $2$ proteins. Consequently, 
+ambiguity about which specific proteins are present is much rarer.  
+Furthermore, if genes, rather than proteoforms, are the entities of 
+interest, then using databases with few proteoforms such as Swiss-Prot 
+should do the job.
 
 We have not extensively tested our new protein inference functionality 
 on smaller data sets. However, based on the results for the hm\_yeast 
