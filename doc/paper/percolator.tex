@@ -235,26 +235,25 @@ be used to calculate a new score for each PSM based on its feature
 set. The final scores are thus calculated using the classifier for 
 which the PSM was in the test set.
 
-To implement subset training, we used a downsampling strategy 
-consisting of the selection of a subset of predefined size of the PSMs 
-by random sampling. Subsequently, we applied Percolator's normal 
-training algorithm on this subset, resulting in three SVM classifiers 
-in the same fashion as mentioned above. For each PSM, including those 
-not selected for training, we then calculated its score as the average 
-of the scores from each of the three SVMs. This strategy involves some 
-overlap between training and test sets, {\em i.e.} PSMs selected as 
-part of the training subset will be evaluated by two SVM classifiers 
-which were trained on this particular PSM, and will only avoid 
-problems of overfitting when the strategy is carried out on large data 
-sets. This strategy was adopted for simplicity of implementation. In a 
-future version of the code, we will implement a scheme in which we 
-downsample each cross-validation bin individually.
+To implement subset training, we used a downsampling strategy in which 
+we randomly sample a subset of the PSM. Subsequently, we applied 
+Percolator's normal training algorithm to this subset, resulting in 
+three SVM classifiers in the same fashion as mentioned above. For each 
+PSM, including those not selected for training, we then calculated its 
+score as the average of the scores from each of the three SVMs. This 
+strategy involves some overlap between training and test sets, because 
+PSMs selected as part of the training subset will be evaluated by two 
+SVM classifiers which were trained on this particular PSM, and will 
+only avoid problems of overfitting when the strategy is carried out on 
+large data sets. This strategy was adopted for simplicity of 
+implementation. In a future version of the code, we will implement a 
+scheme in which we downsample each cross-validation bin individually.
 
 Preliminary results showed that including target and decoy PSMs 
 belonging to the same spectrum together during the selection of the 
-random subset gave a more stable performance than sampling without 
-taking this into account. Therefore, this strategy was applied in the 
-random sampling process.
+random subset gave more stable performance than sampling without 
+taking this distinction into account. Therefore, this strategy was 
+applied in the random sampling process.
 
 \subsection*{Protein inference method calibration benchmark}
 
@@ -271,20 +270,21 @@ and entrapment database, and subsequently assume that any match to the
 sample database is a true positive and any match to the entrapment 
 database is a false positive. 
 
-The assumption that any hit to the sample database is a true positive 
-is not necessarily true, as the peptide or protein could have been 
+The assumption that any match to the sample database is a true positive 
+is not necessarily true, because the peptide or protein could have been 
 inferred through an incorrect PSM. The purpose of the entrapment 
 database is to attract the majority of these incorrect target PSMs, 
 thereby ensuring that the majority of PSMs, peptides and proteins 
 matching to the sample database are correct. The larger the entrapment 
-database, the higher the probability that a true positive is 
-actually true. For example, using an entrapment database $9$ times the 
-size of the sample database, means that, on PSM level, we will 
-underestimate the amount of false positives in the entrapment FDR by 
-at most $11\%$. However, assuming that many of the proteins in the 
-sample database are in fact present, these false positives will not 
-be present at protein-level, due to PSM to peptide reduction and 
-peptide to protein reduction.
+database, the higher the probability that an assumed true positive, 
+{\em i.e.} a match to the sample database, is actually true. For 
+example, using an entrapment database 9 times the size of the sample 
+database, means that we will underestimate the true amount of false 
+positives in the entrapment FDR by ${\sim}11\%$ on the PSM level. 
+However, under the assumption that many of the proteins in the sample 
+database are in fact present, this underestimation is far lower on the 
+protein level, because correct proteins in the sample database will 
+conceal incorrect PSMs matching to it.
 
 Here, the yeast Swiss-Prot database (\url{http://www.uniprot.org/}, 
 accessed: 2016 Mar 15) was taken as the sample database, and the 
