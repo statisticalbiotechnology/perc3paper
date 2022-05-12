@@ -6,6 +6,7 @@
 \author{Lukas,Bill,Will,Markus,Marcus?, Matthew, Charles?}
 
 \usepackage{setspace}
+\usepackage{hyperref}
 \usepackage{amsmath}
 \usepackage{url}
 \usepackage{graphicx}
@@ -156,7 +157,7 @@ The following papers and preprints relates to efforts within the project:
   YY Lu, J Bilmes, RA Rodriguez-Mias, J Vill\'en, WS Noble. {\em Bioinformatics}, {\bf 37}(1) i434–i442
 \end{itemize}
 
-\mysection{ CZI 2021, Proposal Summary}
+\section*{ CZI 2021, Proposal Summary}
 
 Tandem mass spectrometry is the only technology currently capable of
 identifying and quantifying proteins in a complex biological sample in
@@ -236,8 +237,6 @@ which protein mass spectrometry can be applied.
 
 \subsection{Work Plan}
 
-\instructions{A description of the proposed work the applicants are requesting funding for, including resources the applicants will provide that are not part of the requested funding. For software development related work (e.g., engineering, product design, user research), specify how the work fits into the existing software project roadmap. For community outreach related activities (e.g., sprints, training), specify how these activities will be organized, the target audience, and expected outcomes (maximum of 750 words)}
-
 \begin{itemize}
 
 \item {\bf Aim 1: Scalability.}  We will implement two separate improvements of the software aimed at improving the execution speed, thereby enablng interactive use of the software for small- to medium-sized data sets, and allowing the software to handle increasingly large data sets. In analyses involving millions of spectra, Percolator can take many hours or even days to run.
@@ -248,6 +247,7 @@ First, we will incorporate code for faster conjugate gradient least squares supp
 \item {\bf Aim 3: Testing.} A key principle of good software engineering practices is the development, maintenance, and regular application of extensive testing. Percolator's current testing framework is minimal---four tests, implemented using home brewed Python scripts.  We propose to create a set of integration testing scenarios, each consisting of an input data set, program settings, and expected output, and to implement these tests using the Cucumber framework (\href{https://cucumber.io} {https://cucumber.io}). The Noble lab already has extensive experience using Cucumber in other open source software development projects. In particular, we will develop scenarios that test the robustness of the optimization high levels of noise, severely imbalanced classes, and very small data sets. We will use the gcov tool (\href{https://gcc.gnu.org/onlinedocs/gcc/Gcov.html} {https://gcc.gnu.org/onlinedocs/gcc/Gcov.html}) to ensure at least 80\% test code coverage.%  We will also track bug reports per unit time per user, with the goal of decreasing the rate of bugs as our testing improves.
 
 \item {\bf Aim 4: Continuous build system.} The mass spectrometry community is large and diverse, requiring that we support Windows, MacOS and multiple flavors of Linux.  Currently, all commits to the Percolator github repository are automatically test-built by Ubuntu-based Travis-CI nodes, while all deliverables are produced by a local Vagrant-based build system. To avoid supporting two separate build stacks, we propose to switch to using the TeamCity continuous integration system.  This system is available free of charge to small open source projects like ours.  For a different project, the Noble lab already has a TeamCity server running on MacOS, two Linux variants, and Windows.   We propose to implement a Percolator TeamCity server and automate the production of builds on four operating systems---Ubuntu, CentOS, Windows, and MacOS.  The server will automate the running of the Cucumber tests after each commit and will produce binaries for distribution. We will also investigate the option to use the recent addition to GitHub, ``Actions,'' for the same task.
+\end{itemize}
 
 
 \bibliographystyle{plain}

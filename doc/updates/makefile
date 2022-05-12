@@ -1,6 +1,6 @@
-all: percolator.pdf diff.pdf coverletter.pdf coverletter2.pdf
+all: percolator.pdf #diff.pdf coverletter.pdf coverletter2.pdf
 
-percolator.pdf: percolator.tex percolator.bib img/*
+percolator.pdf: percolator.tex # percolator.bib img/*
 
 diff.tex: percolator.tex
 	git show v1:./$? > /tmp/$?
