@@ -1,7 +1,7 @@
 \documentclass{article}
 \usepackage[a4paper,margin=1in]{geometry}
 
-\title{Updates to the Percolatore Mass spectrometry data post processor}
+\title{The Percolator 3.6 Mass spectrometry data post processor}
 
 \author{Lukas,Bill,Will,Markus,Marcus?, Matthew, Charles?}
 
@@ -31,6 +31,7 @@ data processing and analysis, protein inference, large-scale studies
 
 \newpage
 
+
 \section*{Introduction}
 
 
@@ -40,11 +41,31 @@ data processing and analysis, protein inference, large-scale studies
 
 \section*{Results}
 
+\subsection*{Speedupds, Aim 1 below}
+
+\begin{figure}
+  \begin{center}
+   \caption{\label{fig:x}\textbf{Comparison of runtime between Percolator 3.0 and 3.6} Speedup as function of dataset size }
+  \end{center}
+  \end{figure}
+  
+  \subsection*{Markus' work on integration with Fragpipe}
+
+  Benchmark between fragpipe with Peptide Prophet and with Percolator?
+
+  \subsection*{Continuous build system.} 
+
+  GitHub Actions for continuous integration of the Percolator source code. Advantage: carries over with forks.
+
+  \subsection*{Brians' work on GTest}
+Do we have a result here? Percentage of covered code?
+
 
 \section*{Discussion}
 
 
 \section*{Acknowledgements}
+
 \section*{czi2021 Progress report, Progress Overview}
 
 \paragraph{Brief summary}
@@ -91,32 +112,6 @@ Actions for continuous integration of the Percolator source code.  Our
 current implementation generates installation packages for Windows,
 MacOS, Ubuntu and CentOS.
 
-
-\paragraph{Summary of problems encountered and steps to overcome}
-
-\begin{itemize}
-  \item The funding mechanism, with its short lead time and short
-    funding period, led to challenges.  We were given little notice
-    before the start of the award to advertise our open positions.
-    The renewal was also staggered so that, even if we had been
-    successful in renewing the project, we would have had a funding
-    gap of several months.
-  \item For the developers we hired, the key challenge turned out to
-    be coming up to speed on the subject matter.  They underestimated
-    how challenging this would be and and how much it would affect
-    their ability to understand the code.
-  \item Another, closely related problem was the lack of pre-existing
-    internal documentation in Percolator.  As is not unusual for open
-    source academic projects, the code has grown somewhat organically
-    without proper internal documentation. This remains a problem
-    today, which we had planned to address in our renewal application. 
-  \item Achieving interoperability with packages like OpenSWATH and
-    FragPipe turned out to be challenging because those pieces of
-    software are not well documented and are hard to run. One of our
-    developers spent almost a month on this.  On a related note, we
-    ran into problems with converting between file formats. Such
-    problems are particularly difficult for someone new in the field.
-\end{itemize}
 
 \paragraph{Description of results and deliverables}
 
