@@ -60,11 +60,19 @@ On an Intel-i5 9600K-3.7 GHz-6core cpu, we measure a performance increase of 84\
 
 \begin{figure}
   \begin{center}
-    \caption{\textbf{Comparison of runtime between Percolator 3.0 and 3.6} Speedup as function of dataset size }
+    \begin{tabular}{ccc}
+    \includegraphics[width=0.3\linewidth]{img/wall.png} &
+    \includegraphics[width=0.3\linewidth]{img/rate.png} &
+    \includegraphics[width=0.3\linewidth]{img/memory.png} \\
+    A & B & C \\
+    \end{tabular}
+    \caption{\textbf{Comparison of usage of resources between versions of Percolator} 
+    (A) Wall time i.e. the actual time for the job to execute (B) The number of PSMs processed per CPU second 
+    (C) The Peak Resident Memory Size, i.e. the amount of RAM needed.}
     \label{fig:x}
   \end{center}
 \end{figure}
-  
+
 \subsection{Integration with FragPipe}
 
 Benchmark between fragpipe with Peptide Prophet and with Percolator?

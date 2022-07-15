@@ -7,7 +7,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-sns.set_context("talk")
+sns.set_context("poster")
 
 resDir = "./res/"
 
@@ -80,7 +80,7 @@ plt.savefig("img/system.png")
 f, ax = plt.subplots(figsize=(10, 10))
 
 sns.lineplot(data=time, x="size", y="wall", hue = "Version", 
-    hue_order = ['3.6', '3.3', '3.0', '2.8'], marker="o", ax=ax)
+    hue_order = ['2.8', '3.0', '3.3', '3.6'], marker="o", ax=ax)
 plt.xlabel("Number of PSMs")
 plt.ylabel("Wall time [s]")
 plt.savefig("img/wall.png")
