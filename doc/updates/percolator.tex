@@ -1,82 +1,55 @@
 \documentclass{article}
-\usepackage[a4paper,margin=1in]{geometry}
+\usepackage[margin=1in]{geometry} % Set margins.
+\usepackage{authblk} % Better formatting of affiliations.
+\usepackage{url} % Allow URLs.
+\usepackage{graphicx} % Allow figures.
+\usepackage{xcolor} % Allow colored text.
 
 \title{The Percolator 3.6 Mass spectrometry data post processor}
 
-\author{Lukas,Bill,Will,Markus,Marcus?, Matthew, Charles?}
+\author[1]{Lukas K\"{a}ll}
+\author[2,3]{William Stafford Noble}
+\author[4]{Will Fondrie}
+\author[1]{Markus}
+\author[5]{Matthew The}
+\author[2]{Charles Grant}
 
-\usepackage{setspace}
-\usepackage{hyperref}
-\usepackage{amsmath}
-\usepackage{url}
-\usepackage{graphicx}
-\usepackage[outdir=./img/]{epstopdf}
-\usepackage{epsfig}
+\affil[1]{Science for Life Laboratory}
+\affil[2]{Department of Genome Sciences, University of Washington}
+\affil[3]{Paul G.\ Allen School of Computer Science and Engineering,
+  University of Washington}
+\affil[4]{Talus Biosciences}
+\affil[5]{FIXME}
+
+% For things that need to be fixed.
+\newcommand{\fixme}[1]{\color{red}FIXME: #1\color{black}}
 
 \begin{document}
 
 \maketitle
 
-\doublespacing
-
-Keywords: mass spectrometry - LC-MS/MS, statistical analysis, 
-data processing and analysis, protein inference, large-scale studies
-
-
-\newpage
-
 \begin{abstract} 
-
+This is a very abstract abstract.
 \end{abstract}
 
-\newpage
+\section{Introduction}
 
+The Percolator algorithm, first described in 2007 \cite{kall:semi-supervised}, has become one of the most widely used software tools in the field of mass spectrometry proteomics.
+The Percolator software takes as input database search results produced by any one of a variety of search tools and then applies a semi-supervised machine learning approach to rank the identified spectra based on the quality of the peptide-spectrum matches.
 
-\section*{Introduction}
+\section{Methods}
 
+\section{Results}
 
-\section*{Methods}
+\subsection{Speeding up Percolator}
 
+We implemented two speedups in Percolator.
+First, we incorporated a Windows-compatible version of conjugate
+gradient least squares support vector machine training \cite{halloran:speeding}.
+Second, we implemented a layer-ordered heaps sorting and selection
+strategy for partitioning training sets \cite{lucke:performing}.
 
-
-\section*{Results}
-
-\subsection*{Speedupds, Aim 1 below}
-
-\begin{figure}
-  \begin{center}
-   \caption{\label{fig:x}\textbf{Comparison of runtime between Percolator 3.0 and 3.6} Speedup as function of dataset size }
-  \end{center}
-  \end{figure}
-  
-  \subsection*{Markus' work on integration with Fragpipe}
-
-  Benchmark between fragpipe with Peptide Prophet and with Percolator?
-
-  \subsection*{Continuous build system.} 
-
-  GitHub Actions for continuous integration of the Percolator source code. Advantage: carries over with forks.
-
-  \subsection*{Brians' work on GTest}
-Do we have a result here? Percentage of covered code?
-
-
-\section*{Discussion}
-
-
-\section*{Acknowledgements}
-
-\section*{czi2021 Progress report, Progress Overview}
-
-\paragraph{Brief summary}
-
-Our initial proposal contained four aims, all of which we completed
-succesfully.
-
-\paragraph{Key Outcomes}
-
-We divide our progress report according to the aims given in the
-2020-219003 application.
+On an Intel-i5 9600K-3.7 GHz-6core cpu, we measure a performance increase of 84\% with the new code as compared to version 3.04 when processing a very large set of $3\cdot10^8$ peptide-spectrum matches.
 
 % ==> 3-04-wilhelm-30M-psms.log <==
 % real	179m2,265s
@@ -85,165 +58,34 @@ We divide our progress report according to the aims given in the
 % real	97m12,910s
 % user	234m34,415s
 
-{\bf Aim 1: Scalability.} We implemented two speedups in Percolator.
-First, we incorporated a Windows-compatible version of conjugate
-gradient least squares support vector machine training, described in
-(Halloran {\em et al.}, {\em Journal of Proteome Research} 2019).
-Second, we implemented a layer-ordered heaps sorting and selection
-strategy for partitioning training sets (Lucke {\em et al.}, {\em
-  Journal of Proteome Research} 2021).
+\begin{figure}
+  \begin{center}
+    \caption{\textbf{Comparison of runtime between Percolator 3.0 and 3.6} Speedup as function of dataset size }
+    \label{fig:x}
+  \end{center}
+\end{figure}
+  
+\subsection{Integration with FragPipe}
 
-{\bf Aim 2: Generalizing to new problems.} We have implemented a
-protocol for using Percolator to select features from spectrum derived
-from intact peptides (The \& K\"{a}ll, {\em Nature Communications}
-2020), which allows the software to be used for label-free
-quantification. We also implemented a protocol for exporting
-Percolator results to OpenSWATH, enabling easier use of Percolator in
-data-independent acquisition protocols.
+Benchmark between fragpipe with Peptide Prophet and with Percolator?
 
-{\bf Aim 3: Testing.} We have created a working structure for
-automated unit testing. We have integrated the Google Test framework
-into the CMake build, as an optional feature. The automated build
-system (see below) now runs the unit test suite automatically with
-each check-in and includes support for the code coverage tool gcov.
+We have implemented a protocol for using Percolator to match MS1 precursors accross different mass spectrometry runs based on their difference in mass and retention time \cite{the:focus}, which allows the software to be used for label-free quantification.
 
-{\bf Aim 4: Continuous build system.} We have implemented GitHub
-Actions for continuous integration of the Percolator source code.  Our
-current implementation generates installation packages for Windows,
-MacOS, Ubuntu and CentOS.
+We have also implemented an interface to the OpenSWATH module EasyPQ, thereby facilitating using Percolator as a part of data-independent acquisition
+workflows.
 
+\section*{Discussion}
 
-\paragraph{Description of results and deliverables}
+Behind the scenes, we have also improved Percolator from a software engineering perspective.
+First, we have implemented continuous integration of the Percolator source code via Github Actions.
+This implementation automatically generates installation packages for Windows, MacOS, Ubuntu and CentOS.
+Second, we have created extensive automated unit testing.
+To do so, we have integrated the Google Test framework into the CMake build, as an optional feature.
+The automated build system runs the unit test suite automatically with each check-in and includes support for the code coverage tool gcov.
 
-For Aim 1 (speedup), on an Intel-i5 9600K-3.7 GHz-6core cpu, we measure a
-performance increase of 84\% with the new code as compared to version
-3.04 when processing a very large set of $3\cdot10^8$ peptide-spectrum
-matches.
+\paragraph{Acknowledgements}
 
-For Aim 2 (new problems), we have validated a protocol for using
-Percolator to match MS1 precursors accross different mass spectrometry
-runs based on their difference in mass and retention time, as
-described in The \& K\"{a}ll, ({\em Nature Communications} 2020). We
-have also implemented an interface to the OpenSWATH module EasyPQ, and
-hence enabeled Percolator as a part of data-independent acqusition
-workflows. The added functionality will appear in the next release.
-
-For Aim 3 (testing), the main deliverable is an extensive and well
-documented architecture for testing, plus tests for many of the core
-components of the code.
-
-For Aim 4 (continuous build), the main deliverable is the functioning
-Github Actions build process.
-
-\paragraph{Links to papers and preprints}
-The following papers and preprints relates to efforts within the project:
-
-\begin{itemize}
-  \item ``Performing Selection on a Monotonic Function in Lieu of Sorting Using Layer-Ordered Heaps'',
-  K Lucke, J Pennington, P Kreitzberg, L Ka\"{a}ll, O Serang.
-  {\em Journal of Proteome Research} {\bf 20} (4), 1849-1854
-  \item ``Focus on the spectra that matter by clustering of quantification data in shotgun proteomics'',
-  M The, L K\"{a}ll.
-  {\em Nature Communications} {\bf 11} (1), 1-12
-  \item ``mokapot: Fast and Flexible Semisupervised Learning for Peptide Detection'',
-  WE Fondrie, WS Noble.
-  {\em Journal of Proteome Research} {\bf 20} (4), 1966-1971
-  \item ``DIAmeter: Matching peptides to data-independent acquisition mass spectrometry data'',
-  YY Lu, J Bilmes, RA Rodriguez-Mias, J Vill\'en, WS Noble. {\em Bioinformatics}, {\bf 37}(1) i434–i442
-\end{itemize}
-
-\section*{ CZI 2021, Proposal Summary}
-
-Tandem mass spectrometry is the only technology currently capable of
-identifying and quantifying proteins in a complex biological sample in
-an unbiased high-throughput fashion. As such, this technology is a key
-driver behind the rapid growth of the field of proteomics. The
-Percolator algorithm, first described in 2007, has become one of the
-most widely used software tools in this field. The Percolator software
-takes as input database search results produced by any one of a
-variety of search tools and then applies a semi-supervised machine
-learning approach to rank the identified spectra based on the quality
-of the peptide-spectrum matches.
-
-During the first year of CZI support, we made Percolator faster, more
-robust, and applicable to more types of mass spectrometry data. During
-the proposed second phase of funding, we propose four specific aims:
-we will add a graphical user interface, improve our internal and
-external documentation, significantly improve Percolator's testing
-infrastructure, and enhance the software's interoperability with a
-variety of other mass spectrometry tools.
-
-Aim 1: Many practitioners of mass spectrometry are not comfortable
-using a command line interface but are instead using Percolator
-through the user interfaces of other, often closed source, software.
-We here aim to equip Percolator with its own graphical user interface,
-enabling standalone execution for less computer-savvy users. We plan
-to use the multi-platform widget toolkit Qt for this task.
-
-Aim 2: Currently Percolator is accompanied with basic usage
-instructions at \url{http://percolator.ms} and a command line usage
-statement. We aim to improve our internal and external documentation
-by adding a richer pallet of usage instructions, both as web pages and
-recorded video instructions at our web site.
-
-Aim 3: During the previous grant period, we implemented a Google Test
-infrastructure for unit tests. We plan to further build out this
-testing structure, with the aim of increasing coverage, and we will add
-a comprehensive set of system tests.
-
-Aim 4: We plan to improve Percolator's interoperability with a set of
-related pieces of software. We will improve the Percolator interface
-to the nextflow/nf-core implementation of the OpenMS/OpenSWATH
-workflows.  We will further improve Percolator's ability to process
-DIA data by better interfacing with OpenSWATH.  Finally, we will
-implement several other features related to interoperability, as
-suggested by our users.
-
-\section*{czi2020 summary}
-Tandem mass spectrometry is the only technology currently capable of
-identifying and quantifying proteins in a complex biological sample in
-a high-throughput fashion. As such, this technology is a key driver
-behind the rapid growth of the field of proteomics.  The Percolator
-algorithm, first described in 2007, has become one of the most widely
-used software tools in this field.  The Percolator software takes as
-input database search results produced by any one of a variety of
-search tools and then applies a semi-supervised machine learning
-approach to rank the identified spectra based on the quality of the
-peptide-spectrum matches.
-
-The goal of the proposed project is to augment Percolator's
-functionality with much-needed new features and to improve the
-robustness of the software.
-We will modify the Percolator software to scale gracefully to very
-large data sets.
-We will extend Percolator to include the ability to analyze data
-sets that aim to quantify, rather than simply identify, proteins, as
-well as data generated using the newer ``data independent acquisition"
-protocol.
-We will implement an extensive suite of regression tests using the
-Cucumber testing framework.
-We will switch from Travis CI compilation to a TeamCity continuous
-build system, facilitating the package building of Percolator and improving the support for Windows.
-
-This proposal will enhance a core piece of proteomics software that is
-already in widespread use.  Percolator will thus continue to have
-impacts beyond the field of proteomics, in any biological setting in
-which protein mass spectrometry can be applied.
-
-\subsection{Work Plan}
-
-\begin{itemize}
-
-\item {\bf Aim 1: Scalability.}  We will implement two separate improvements of the software aimed at improving the execution speed, thereby enablng interactive use of the software for small- to medium-sized data sets, and allowing the software to handle increasingly large data sets. In analyses involving millions of spectra, Percolator can take many hours or even days to run.
-First, we will incorporate code for faster conjugate gradient least squares support vector machine training, described in Halloran {\em et al.} \cite{halloran:matter} (Supplementary Figure 1). However, to implement the speedup under Windows, we will replace its pthreads with OpenMP multiprocessing support.  Second, we will speed up Percolator by using approximate sorting. Currently, Percolator involves fully sorting the re-scored peptide-spectrum matches using a routine from the C++ Standard Library. In practice, the $\mathcal{O}(n \log n)$ running time becomes a bottleneck for larger datasets. However, the Percolator training procedure does not require exact sorting. We will therefore replace the current sorting scheme with a truncated fixed-precision sorting version of RADIX-sort \cite{cormen:introduction}, which executes in $\mathcal{O}(n)$, hence enabling faster training on larger sets.
-
-\item {\bf Aim 2: Generalizing to new problems.} Percolator has been designed to maximize the number of peptides detected in a single mass spectrometry experiment. However, Percolator's optimization scheme can be applied to other shotgun proteomics analysis problems, where data is selected based on a linear combination of features. Accordingly, we will generalize Percolator to work on two new types of data.  First, Percolator will be generalized to quantify peptides, rather than simply detecting peptides. This work will involve implementing features to match observed peaks based on combinations of their differences in mass-to-charge ratio and retention time when performing so-called ``matches-between-runs''  \cite{zhang:covariation}. Initial tests suggest a dramatic increase in the number of correctly identified peaks \cite{the:focus} (Supplementary Figure 2). Second, Percolator will be generalized to work with data acquired using newer ``data-independent acquisition'' (DIA) protocols.  Percolator has already been incorporated into two DIA search engines \cite{ting:pecan, searle:chromatogram}. However, the current implementation was developed and tuned for use with traditional ``data-dependent acquisition'' (DDA) data. Because the ratio of correct to incorrect peptide-spectrum matches is dramatically different between these two acquisition modes---$\sim$50\% for DDA and $\sim$95\% for DIA---the behavior of the algorithm on DIA data is suboptimal.  Our tests suggest that selecting more strict thresholds during training results in more accurate end results. Generalizing to DIA will involve automatically tuning the threshold in a data-driven way and explicitly supporting the types of features generated by DIA experiments.
-
-\item {\bf Aim 3: Testing.} A key principle of good software engineering practices is the development, maintenance, and regular application of extensive testing. Percolator's current testing framework is minimal---four tests, implemented using home brewed Python scripts.  We propose to create a set of integration testing scenarios, each consisting of an input data set, program settings, and expected output, and to implement these tests using the Cucumber framework (\href{https://cucumber.io} {https://cucumber.io}). The Noble lab already has extensive experience using Cucumber in other open source software development projects. In particular, we will develop scenarios that test the robustness of the optimization high levels of noise, severely imbalanced classes, and very small data sets. We will use the gcov tool (\href{https://gcc.gnu.org/onlinedocs/gcc/Gcov.html} {https://gcc.gnu.org/onlinedocs/gcc/Gcov.html}) to ensure at least 80\% test code coverage.%  We will also track bug reports per unit time per user, with the goal of decreasing the rate of bugs as our testing improves.
-
-\item {\bf Aim 4: Continuous build system.} The mass spectrometry community is large and diverse, requiring that we support Windows, MacOS and multiple flavors of Linux.  Currently, all commits to the Percolator github repository are automatically test-built by Ubuntu-based Travis-CI nodes, while all deliverables are produced by a local Vagrant-based build system. To avoid supporting two separate build stacks, we propose to switch to using the TeamCity continuous integration system.  This system is available free of charge to small open source projects like ours.  For a different project, the Noble lab already has a TeamCity server running on MacOS, two Linux variants, and Windows.   We propose to implement a Percolator TeamCity server and automate the production of builds on four operating systems---Ubuntu, CentOS, Windows, and MacOS.  The server will automate the running of the Cucumber tests after each commit and will produce binaries for distribution. We will also investigate the option to use the recent addition to GitHub, ``Actions,'' for the same task.
-\end{itemize}
-
+This work was supported by \fixme{get verbiage for CZI award.}
 
 \bibliographystyle{plain}
 \bibliography{percolator}
