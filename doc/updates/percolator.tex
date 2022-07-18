@@ -49,14 +49,17 @@ gradient least squares support vector machine training \cite{halloran:speeding}.
 Second, we implemented a layer-ordered heaps sorting and selection
 strategy for partitioning training sets \cite{lucke:performing}.
 
-On an Intel-i5 9600K-3.7 GHz-6core cpu, we measure a performance increase of 84\% with the new code as compared to version 3.04 when processing a very large set of $3\cdot10^8$ peptide-spectrum matches.
+On an Intel-i5 9600K-3.7 GHz-6core cpu, we measure a performance increase of 89\% with the new code as compared to version 3.03 when processing a very large set of $2.5\cdot10^8$ peptide-spectrum matches (4.0 vs 2.1 CPU hours needed).
+The performance increase is consistent accross sizes of data sets, see Figure \ref{fig:performance}.
+% $ more res/per.36.25000k.time 
+% 7241.00user 318.48system 51:49.33elapsed 243%CPU (0avgtext+0avgdata 26727048maxresident)k
+% 83856inputs+927880outputs (1major+351954695minor)pagefaults 0swaps
+% $ more res/per.33.25000k.time 
+% 14156.46user 108.39system 1:24:18elapsed 282%CPU (0avgtext+0avgdata 32813852maxresident)k
+% 24inputs+136outputs (1major+130080852minor)pagefaults 0swaps
 
-% ==> 3-04-wilhelm-30M-psms.log <==
-% real	179m2,265s
-% user	494m24,008s
-% ==> master-wilhelm-30M-psms.log <==
-% real	97m12,910s
-% user	234m34,415s
+% (14156,46+108,39)÷(7241.00+318.48) = 1,887
+
 
 \begin{figure}
   \begin{center}
@@ -66,11 +69,12 @@ On an Intel-i5 9600K-3.7 GHz-6core cpu, we measure a performance increase of 84\
     \includegraphics[width=0.3\linewidth]{img/memory.png} \\
     A & B & C \\
     \end{tabular}
-    \caption{\textbf{Comparison of use of resources between versions of Percolator} 
-      (A) The figure plots wall clock time as a function of the number of PSMs in the input file.
-      (B) The number of PSMs processed per CPU second, as a function of the number of PSMs.
-    (C) The peak resident memory size, i.e. the amount of RAM needed, as a function of the number of PSMs.}
-    \label{fig:x}
+    \caption{\textbf{Newer verions of Percolator uses less resources than older ones.} 
+      The reduced demands by newer version of percolator as (A) the wall clock time as a function of the number of processed PSMs,
+      (B) the number of PSMs processed per CPU second as a function of the number of PSMs, and
+      (C) the peak resident memory size, i.e. the amount of RAM needed as a function of the number of PSMs. 
+      For the plot we subsampled a set of 25 million PSMs, and executed the different verions of percolator 6 times and reported the execution with the lowest resource usage, to minimize the potential influence of other processes on performance.}
+    \label{fig:performance}
   \end{center}
 \end{figure}
 
@@ -82,6 +86,11 @@ We have implemented a protocol for using Percolator to match MS1 precursors accr
 
 We have also implemented an interface to the OpenSWATH module EasyPQ, thereby facilitating using Percolator as a part of data-independent acquisition
 workflows.
+
+\section*{Methods}
+
+We benchmarked the performance of Percolator ver 2.8, 3.0, 3.3, and 3.6 on an Intel-i5 9600K-3.7 GHz-6core cpu, downloaded from \url{https://github.com/percolator/percolator/releases}. The dataset used was 25 million PSMs, with spectra from Kim {\em et al.}\cite{kim2014draft} matched to uniprot with Crux\cite{park2008rapid}.
+The runtime and memory use performance was measured with Linux's {\tt /usr/bin/time} command. 
 
 \section*{Discussion}
 
