@@ -52,7 +52,7 @@ for filename in glob.iglob(f'{resDir }/*.time'):
 vers = [ver for ver in runtimes.keys() for size in runtimes["2.8"].keys() ]
 sizes = [size for ver in runtimes.keys() for size in runtimes["2.8"].keys() ]
 time = pd.DataFrame({
-    "Version": vers,
+    "Percolator Version": vers,
     "size": sizes,
     "user": [runtimes[ver][size]['user'] for ver in runtimes.keys() for size in runtimes["2.8"].keys()],
     "system": [runtimes[ver][size]['system'] for ver in runtimes.keys() for size in runtimes["2.8"].keys()],
@@ -65,44 +65,47 @@ time["wall_rate"]=time["size"]/time["wall"]
 
 f, ax = plt.subplots(figsize=(10, 10))
 #ax.set(xscale="log", yscale="log")
-sns.lineplot(data=time, x="size", y="user", hue = "Version", 
+sns.lineplot(data=time, x="size", y="user", hue = "Percolator Version", 
     hue_order = ['2.8', '3.0', '3.3', '3.6'], marker="o", ax=ax)
+f.subplots_adjust(left=0.17)
 plt.xlabel("Number of PSMs")
 plt.ylabel("User time [s]")
 plt.savefig("img/user.png")
 
 f, ax = plt.subplots(figsize=(10, 10))
-sns.lineplot(data=time, x="size", y="system", hue = "Version", 
+sns.lineplot(data=time, x="size", y="system", hue = "Percolator Version", 
     hue_order = ['3.6', '3.3', '3.0', '2.8'], marker="o", ax=ax)
 plt.xlabel("Number of PSMs")
 plt.ylabel("System time [s]")
 plt.savefig("img/system.png")
-f, ax = plt.subplots(figsize=(10, 10))
 
-sns.lineplot(data=time, x="size", y="wall", hue = "Version", 
+f, ax = plt.subplots(figsize=(10, 10))
+gfg = sns.lineplot(data=time, x="size", y="wall", hue = "Percolator Version", 
     hue_order = ['2.8', '3.0', '3.3', '3.6'], marker="o", ax=ax)
-plt.xlabel("Number of PSMs")
-plt.ylabel("Wall time [s]")
+f.subplots_adjust(left=0.2)
+gfg.set(xlabel = "Number of PSMs", ylabel = "Wall time [s]")
 plt.savefig("img/wall.png")
 
 f, ax = plt.subplots(figsize=(10, 10))
-sns.lineplot(data=time, x="size", y="resident", hue = "Version", 
+sns.lineplot(data=time, x="size", y="resident", hue = "Percolator Version", 
     hue_order = ['2.8', '3.0', '3.3', '3.6'], marker="o", ax=ax)
 plt.xlabel("Number of PSMs")
 plt.ylabel("Peak Resident Memory Size [GB]")
 plt.savefig("img/memory.png")
 
 f, ax = plt.subplots(figsize=(10, 10))
-sns.lineplot(data=time[time["size"]>5000], x="size", y="cpu_rate", hue = "Version", 
+sns.lineplot(data=time[time["size"]>5000], x="size", y="cpu_rate", hue = "Percolator Version", 
     hue_order = ['3.6', '3.3', '3.0', '2.8'], marker="o", ax=ax)
+f.subplots_adjust(left=0.15)
 plt.xlabel("Number of PSMs")    
 plt.ylabel("PSMs Processed per CPU second")
 plt.ylim(0,5000)
 plt.savefig("img/rate.png")
 
 f, ax = plt.subplots(figsize=(10, 10))
-sns.lineplot(data=time[time["size"]>5000], x="size", y="wall_rate", hue = "Version", 
+sns.lineplot(data=time[time["size"]>5000], x="size", y="wall_rate", hue = "Percolator Version", 
     hue_order = ['3.6', '3.3', '3.0', '2.8'], marker="o", ax=ax)
+f.subplots_adjust(left=0.18)
 plt.xlabel("Number of PSMs")
 plt.ylabel("PSMs Processed per Wall second")
 #plt.ylim(0,5000)
